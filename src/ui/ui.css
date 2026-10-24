@@ -1,0 +1,175 @@
+/* Interfaz en HTML por encima del juego: marcador, bocadillos, preguntas y botón de acción */
+:root {
+  --papel: #f7efdf;
+  --papel-borde: #c9b48f;
+  --tinta: #3b2f28;
+  --tinta-suave: #7a6656;
+  --acento: #4f6b4a;
+  --noche: #3b2f5c;
+  --farolillo: #ffe2a0;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #1e1814;
+  overflow: hidden;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+#juego { width: 100%; height: 100%; }
+
+#ui { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+#ui > * { pointer-events: auto; }
+
+/* Marcador: día, momento del día y recursos */
+.hud {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 14px;
+  background: rgba(247, 239, 223, 0.92);
+  border: 2px solid var(--papel-borde);
+  border-radius: 999px;
+  color: var(--tinta);
+  font-size: 15px;
+  pointer-events: none !important;
+}
+.hud .fase { font-weight: bold; }
+.hud .sep { color: var(--papel-borde); }
+
+/* Pista de acción en PC: "[E] Entrar" */
+.pista {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  padding: 6px 14px;
+  background: rgba(59, 47, 40, 0.85);
+  color: var(--papel);
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  display: none;
+}
+.pista kbd {
+  display: inline-block;
+  padding: 0 6px;
+  margin-right: 6px;
+  border: 1px solid var(--papel-borde);
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+/* Botón grande de acción en móvil */
+.boton-accion {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  min-width: 84px;
+  height: 84px;
+  padding: 0 14px;
+  border-radius: 42px;
+  border: 3px solid var(--papel-borde);
+  background: var(--papel);
+  color: var(--tinta);
+  font: bold 16px 'Georgia', serif;
+  display: none;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+}
+.boton-accion:active { transform: translateY(2px); box-shadow: none; }
+
+.tactil .pista { display: none !important; }
+.tactil .boton-accion.visible { display: block; }
+.pista.visible { display: block; }
+
+/* Capa que recoge los toques mientras hay un diálogo abierto */
+.velo { position: absolute; inset: 0; display: none; }
+.velo.visible { display: block; }
+
+/* Bocadillo de diálogo */
+.dialogo {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  width: min(720px, calc(100% - 32px));
+  transform: translateX(-50%);
+  padding: 18px 22px 22px;
+  background: var(--papel);
+  border: 3px solid var(--papel-borde);
+  border-radius: 14px;
+  color: var(--tinta);
+  font-size: 19px;
+  line-height: 1.45;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+  display: none;
+}
+.dialogo.visible { display: block; }
+.dialogo .quien {
+  position: absolute;
+  top: -16px;
+  left: 18px;
+  padding: 2px 12px;
+  background: var(--acento);
+  color: var(--papel);
+  border-radius: 8px;
+  font-size: 15px;
+  display: none;
+}
+.dialogo.espiritu .quien { background: var(--noche); color: var(--farolillo); }
+.dialogo .texto { min-height: 2.9em; white-space: pre-wrap; }
+.dialogo .flecha {
+  position: absolute;
+  right: 16px;
+  bottom: 6px;
+  color: var(--tinta-suave);
+  font-size: 14px;
+  animation: flecha 0.9s ease-in-out infinite;
+  visibility: hidden;
+}
+@keyframes flecha { 50% { transform: translateY(3px); } }
+
+.opciones { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.opciones button {
+  flex: 1 1 140px;
+  padding: 10px 14px;
+  border: 2px solid var(--papel-borde);
+  border-radius: 10px;
+  background: #fffaf0;
+  color: var(--tinta);
+  font: 17px 'Georgia', serif;
+  cursor: pointer;
+}
+.opciones button.marcada,
+.opciones button:hover { background: var(--acento); border-color: var(--acento); color: var(--papel); }
+
+/* Aviso corto que aparece y se va solo */
+.aviso {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  background: rgba(247, 239, 223, 0.95);
+  border: 2px solid var(--papel-borde);
+  border-radius: 10px;
+  color: var(--tinta);
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none !important;
+}
+.aviso.visible { opacity: 1; }
+
+@media (max-height: 420px) {
+  .dialogo { font-size: 16px; padding: 14px 16px 18px; }
+  .hud { font-size: 13px; }
+}
