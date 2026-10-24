@@ -9,7 +9,7 @@ import { Spirit } from '../objects/Spirit.js';
 import { TEXTOS } from '../data/textos.js';
 import * as L from '../data/libraryLayout.js';
 
-const PARED_DELANTE = 16; // franja de pared de abajo, con el hueco de la puerta
+const PARED_DELANTE = 16; // franja de pared de abajo
 // La imagen va centrada en la pantalla
 const OX = Math.round((ANCHO - L.IMAGEN.ancho) / 2);
 const OY = Math.round((ALTO - L.IMAGEN.alto - PARED_DELANTE) / 2);
@@ -34,8 +34,9 @@ export class LibraryScene extends BaseScene {
     this.crearNoche();
     this.crearInteracciones();
 
-    const inicio = p(L.PUERTA);
-    this.crearJugador(inicio.x, inicio.y - 10).sprite.setTexture('prota-n');
+    // Al despertar se aparece junto a la puerta de casa; si no, en la entrada
+    const inicio = datos.entrada === 'despertar' ? p({ x: L.CASA.x - 10, y: L.CASA.y }) : p(L.ENTRADA);
+    this.crearJugador(inicio.x, inicio.y + 6);
     if (datos.entrada === 'inicio') this.presentacion();
     if (juego.fase === 'noche') this.empezarNoche();
   }
@@ -56,18 +57,14 @@ export class LibraryScene extends BaseScene {
   dibujarParedDelantera() {
     const g = this.add.graphics().setDepth(OY + L.IMAGEN.alto + PARED_DELANTE);
     const y = OY + L.IMAGEN.alto;
-    const puerta = p(L.PUERTA);
     g.fillStyle(0x4a3426).fillRect(OX, y, L.IMAGEN.ancho, PARED_DELANTE);
     g.fillStyle(0x5b3f2b).fillRect(OX, y, L.IMAGEN.ancho, 3);
-    g.fillStyle(0x7a6a5a).fillRect(puerta.x - 26, y, 52, PARED_DELANTE); // felpudo
-    g.fillStyle(0x8f7d68).fillRect(puerta.x - 22, y + 4, 44, PARED_DELANTE - 8);
+    this.muro(OX, y + 8, L.IMAGEN.ancho, PARED_DELANTE);
 
-    this.muro(OX, y + 8, puerta.x - 26 - OX, PARED_DELANTE);
-    this.muro(puerta.x + 26, y + 8, OX + L.IMAGEN.ancho - puerta.x - 26, PARED_DELANTE);
-
-    // Cartel de abierto/cerrado junto a la puerta
+    // Cartel de abierto/cerrado, colgado encima de la entrada
+    const c = p(L.CARTEL);
     this.cartel = this.add
-      .text(puerta.x + 56, y + PARED_DELANTE / 2, '', {
+      .text(c.x, c.y, '', {
         fontFamily: 'Georgia',
         fontSize: '11px',
         color: '#f7efdf',
@@ -75,7 +72,7 @@ export class LibraryScene extends BaseScene {
         padding: { x: 5, y: 2 },
       })
       .setOrigin(0.5)
-      .setDepth(OY + L.IMAGEN.alto + PARED_DELANTE + 1);
+      .setDepth(OY + L.ENTRADA.y);
     this.pintarCartel();
   }
 
@@ -134,14 +131,13 @@ export class LibraryScene extends BaseScene {
   // ---------- Interacciones ----------
 
   crearInteracciones() {
-    const puerta = p(L.PUERTA);
     this.interaccion({
-      x: puerta.x,
-      y: puerta.y - 12,
+      ...p(L.ENTRADA),
+      radio: 36,
       texto: () => (juego.fase === 'mañana' ? 'Girar el cartel' : 'Puerta'),
       accion: () => this.usarPuerta(),
     });
-    this.interaccion({ ...p(L.CORTINA), radio: 36, texto: 'Subir a casa', accion: () => this.usarCortina() });
+    this.interaccion({ ...p(L.CASA), radio: 30, texto: 'Subir a casa', accion: () => this.subirACasa() });
     this.interaccion({ ...p(L.ESTANTERIAS), radio: 44, texto: 'Mirar', accion: () => hablar(TEXTOS.estanteria) });
     this.interaccion({ ...p(L.TATAMI), radio: 40, texto: 'Mirar', accion: () => hablar(TEXTOS.tatami) });
     this.interaccion({
@@ -179,7 +175,7 @@ export class LibraryScene extends BaseScene {
     await hablar(TEXTOS.puertaNoche);
   }
 
-  async usarCortina() {
+  async subirACasa() {
     if (juego.fase !== 'noche') {
       await hablar(TEXTOS.prontoParaDormir);
       return;
@@ -202,9 +198,9 @@ export class LibraryScene extends BaseScene {
   // De noche entra un espíritu, se acerca a la barra y espera con su "!"
   empezarNoche() {
     if (this.espiritu) return;
-    const puerta = p(L.PUERTA);
+    const entrada = p(L.ENTRADA);
     const sitio = p(L.SITIO_ESPIRITU);
-    const e = new Spirit(this, puerta.x, puerta.y - 6, 'okiku');
+    const e = new Spirit(this, entrada.x, entrada.y, 'okiku');
     this.espiritu = e;
     e.aparecer()
       .then(() => e.ir(sitio.x, sitio.y, 3200))

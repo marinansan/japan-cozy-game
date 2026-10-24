@@ -19,6 +19,7 @@ export const MUROS = [
   { x: 272, y: 300, ancho: 93, alto: 80 }, // mesa redonda de abajo con sillas
   { x: 377, y: 160, ancho: 135, alto: 112 }, // rincón de tatami
   { x: 466, y: 272, ancho: 46, alto: 22 }, // planta de la derecha
+  { x: 494, y: 294, ancho: 18, alto: 74 }, // puerta de casa (pared derecha)
 ];
 
 // Trozos de la imagen que se dibujan "delante" del protagonista cuando
@@ -37,8 +38,9 @@ export const FRENTES = [
 ];
 
 // Sitios importantes
-export const PUERTA = { x: 236, y: 384 }; // la puerta está en el borde de abajo
-export const CORTINA = { x: 333, y: 168 }; // la noren del fondo, que sube a casa
+export const ENTRADA = { x: 333, y: 176 }; // la noren del fondo: entrada principal, desde el jardín
+export const CARTEL = { x: 333, y: 64 }; // cartel de abierto/cerrado, encima de la noren
+export const CASA = { x: 484, y: 330 }; // puerta corredera de la pared derecha, que sube a casa
 export const BARISTA = { x: 32, y: 270 }; // rincón detrás de la barra (se entra por abajo a la izquierda)
 export const ESTANTERIAS = { x: 240, y: 200 };
 export const TATAMI = { x: 440, y: 282 };

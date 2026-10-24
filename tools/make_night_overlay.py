@@ -11,7 +11,8 @@ DESTINO = 'public/assets/libreria-noche.png'
 
 # Zonas de la imagen (x0, y0, x1, y1)
 # (la puerta del jardín, tras la noren, no entra: taparía al protagonista)
-VENTANAS = [(383, 60, 502, 162), (200, 10, 286, 36)]
+# (solo los cristales, para no tocar la enredadera de los pilares)
+VENTANAS = [(387, 64, 497, 162), (200, 10, 286, 36)]
 FAROLILLOS = [(64, 80, 100, 124), (122, 146, 165, 190), (181, 80, 219, 122), (412, 26, 452, 70)]
 
 CIELO_ARRIBA = (48, 40, 108)
