@@ -11,8 +11,9 @@ export class Player {
     this.scene = scene;
     this.sombra = scene.add.image(x, y, 'sombra').setAlpha(0.35);
     // El punto de apoyo del sprite son los pies, para ordenar bien quién tapa a quién
-    this.sprite = scene.physics.add.sprite(x, y, 'prota-s').setOrigin(0.5, 1);
-    this.sprite.body.setSize(14, 8).setOffset(5, 32);
+    // Las imágenes miden 84x84 y los pies están a 73 px de arriba
+    this.sprite = scene.physics.add.sprite(x, y, 'prota-s').setOrigin(0.5, 73 / 84);
+    this.sprite.body.setSize(16, 8).setOffset(34, 65);
     this.sprite.setCollideWorldBounds(true);
 
     this.teclas = scene.input.keyboard.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT');
@@ -103,9 +104,10 @@ export class Player {
     const andando = v.length() > 0;
     if (andando) {
       if (Math.abs(vy) > Math.abs(vx)) this.sprite.setTexture(vy < 0 ? 'prota-n' : 'prota-s');
-      else this.sprite.setFlipX(vx < 0);
+      else this.sprite.setTexture(vx < 0 ? 'prota-o' : 'prota-e');
+      // Balanceo provisional hasta tener la animación de caminar
       this.paso += this.scene.game.loop.delta;
-      this.sprite.setAngle(Math.sin(this.paso / 70) * 4);
+      this.sprite.setAngle(Math.sin(this.paso / 70) * 2);
     } else {
       this.sprite.setAngle(0);
     }
