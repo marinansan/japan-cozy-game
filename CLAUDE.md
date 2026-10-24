@@ -31,6 +31,18 @@ Las decisiones de abajo son **más recientes** que ese prompt y mandan sobre él
   - Personaje de PixelLab `8296a179-5485-4913-9726-1e5a63769489`, 84x84, 4 direcciones y animación de caminar
     (6 fotogramas) en `public/assets/prota/`.
   - **Ojos siempre marrones** y **sin sombra gris** bajo los pies: pasar `tools/clean_prota.py` por cada imagen nueva.
+- **Clientes y vecinos** (reparto decidido):
+  - Con historia: **el farolero** (~80), **señora Hana** (~75, amiga de la abuela), **Yui** (16, instituto en la ciudad;
+    será la ayudante de otoño) y **Kenji** (~38, nieto de Okiku; llega tras su recuerdo y reabre el taller de farolillos).
+  - Secundarios: **señor Mori** (~80, jefe de estación), **Sora** (~25, cartera en bici, una vez por semana),
+    **Riku** (17, amigo de Yui, béisbol; llega más adelante).
+  - Visitantes sin diálogo: senderista, pareja mayor de turistas, fotógrafa.
+  - Al empezar vienen el farolero, Hana y Mori.
+- **El farolero:** anciano encorvado con bastón nudoso, piel morena, calvo con gorra plana marrón, bigote y perilla blancos,
+  chaqueta larga **verde musgo** de cuello alto, pantalón gris, calcetines blancos, zapatillas negras y un
+  **farolillo de papel apagado** al cinturón. Imágenes en `public/assets/farolero/` (64x64, 4 direcciones y
+  animación de caminar lenta con el bastón, 8 fotogramas). El farolillo se apaga con `tools/dim_lantern.py`.
+  Se hizo con `generate-8-rotations-v3` y `animate-with-text-v3` (crear "personaje" pide tener ~20 generaciones libres).
 - **Espíritus:** translúcidos con halo lavanda (la señora Okiku, `public/assets/okiku.png`).
 
 ## Cómo probar
