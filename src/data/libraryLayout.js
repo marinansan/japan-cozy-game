@@ -53,3 +53,9 @@ export const FAROLILLOS = [
   { x: 200, y: 102 },
   { x: 432, y: 50 },
 ];
+
+// Ventanas por las que entra el resplandor del cielo de noche
+export const VENTANAS_NOCHE = [
+  { x: 442, y: 112, escala: 1.6 },
+  { x: 243, y: 24, escala: 1 },
+];

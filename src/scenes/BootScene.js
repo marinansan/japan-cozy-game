@@ -9,6 +9,7 @@ export class BootScene extends Phaser.Scene {
   preload() {
     this.load.image('libreria-fuera', 'assets/libreria-fuera.png');
     this.load.image('libreria-dentro', 'assets/libreria-dentro.png');
+    this.load.image('libreria-noche', 'assets/libreria-noche.png');
     this.load.image('okiku', 'assets/okiku.png');
     this.load.image('suelo-hierba', 'assets/suelo-hierba.png');
   }

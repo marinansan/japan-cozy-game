@@ -9,7 +9,7 @@ export const VELOCIDAD = 130;
 // Color de la luz en cada momento del día (se multiplica sobre la escena).
 // Dentro de la librería la luz es más cálida; fuera, más suave.
 export const LUZ = {
-  interior: { mañana: 0xfff3e2, tarde: 0xffd9a8, noche: 0x7466b8 },
+  interior: { mañana: 0xfff3e2, tarde: 0xffd9a8, noche: 0x5a52a0 },
   exterior: { mañana: 0xffffff, tarde: 0xffe6c4, noche: 0x5a5a9a },
 };
 

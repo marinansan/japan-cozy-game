@@ -31,7 +31,7 @@ export class LibraryScene extends BaseScene {
     this.colocarFrentes();
     this.dibujarParedDelantera();
     L.MUROS.forEach((m) => this.muro(OX + m.x, OY + m.y, m.ancho, m.alto));
-    this.crearBrillos();
+    this.crearNoche();
     this.crearInteracciones();
 
     const inicio = p(L.PUERTA);
@@ -83,18 +83,80 @@ export class LibraryScene extends BaseScene {
     this.cartel.setText(juego.fase === 'mañana' ? 'ABIERTO' : 'CERRADO');
   }
 
-  // Brillos lavanda de los farolillos (solo de noche)
-  crearBrillos() {
-    this.brillos = L.FAROLILLOS.map((f) =>
-      this.add
-        .image(OX + f.x, OY + f.y, 'brillo')
-        .setTint(0xb9a2ff)
-        .setBlendMode(Phaser.BlendModes.ADD)
-        .setScale(1.5)
-        .setAlpha(0.5)
-        .setDepth(9001)
-        .setVisible(juego.fase === 'noche'),
-    );
+  // La noche: cielo estrellado en las ventanas, farolillos en ámbar,
+  // charcos de luz cálida y lucecitas flotando. Todo va por encima de la
+  // capa de luz (que oscurece en violeta) para que brille de verdad.
+  crearNoche() {
+    const cosas = [];
+    const ADD = Phaser.BlendModes.ADD;
+
+    cosas.push(this.add.image(OX, OY, 'libreria-noche').setOrigin(0).setDepth(9002));
+
+    // Resplandor violeta del cielo que entra por las ventanas
+    L.VENTANAS_NOCHE.forEach((v) => {
+      cosas.push(
+        this.add.image(OX + v.x, OY + v.y, 'brillo').setTint(0x8f6ad8).setBlendMode(ADD)
+          .setScale(v.escala).setAlpha(0.3).setDepth(9001),
+      );
+    });
+
+    // Farolillos: halo ámbar que tiembla un poco, como una llama
+    L.FAROLILLOS.forEach((f, i) => {
+      const halo = this.add.image(OX + f.x, OY + f.y, 'brillo').setTint(0xff9a3c).setBlendMode(ADD)
+        .setScale(1.5).setAlpha(0.34).setDepth(9001);
+      const charco = this.add.image(OX + f.x, OY + f.y + 70, 'brillo').setTint(0xff8a2a).setBlendMode(ADD)
+        .setScale(2.4, 1.3).setAlpha(0.12).setDepth(9001);
+      this.tweens.add({
+        targets: halo,
+        alpha: 0.26,
+        scale: 1.4,
+        duration: 900 + i * 230,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.inOut',
+      });
+      cosas.push(halo, charco);
+    });
+
+    // Lucecitas que flotan despacio por la sala (luciérnagas)
+    const azar = new Phaser.Math.RandomDataGenerator(['luciernagas']);
+    for (let i = 0; i < 22; i++) {
+      const x = OX + azar.between(20, L.IMAGEN.ancho - 20);
+      const y = OY + azar.between(30, L.IMAGEN.alto - 20);
+      const luz = this.add.image(x, y, 'brillo').setTint(azar.pick([0xffd58a, 0xffc070, 0xfff0c0]))
+        .setBlendMode(ADD).setScale(azar.realInRange(0.05, 0.09)).setAlpha(0).setDepth(9003);
+      this.tweens.add({
+        targets: luz,
+        x: x + azar.between(-40, 40),
+        y: y + azar.between(-30, 20),
+        duration: azar.between(5000, 9000),
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.inOut',
+      });
+      this.tweens.add({
+        targets: luz,
+        alpha: { from: 0, to: azar.realInRange(0.6, 1) },
+        duration: azar.between(1200, 2600),
+        delay: azar.between(0, 3000),
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.inOut',
+      });
+      cosas.push(luz);
+    }
+
+    // Que ninguna luz se salga de la sala
+    const forma = this.make.graphics({ add: false }).fillStyle(0xffffff).fillRect(OX, OY, L.IMAGEN.ancho, L.IMAGEN.alto);
+    const mascara = forma.createGeometryMask();
+    cosas.forEach((c) => c.setMask(mascara));
+
+    this.cosasNoche = cosas;
+    this.mostrarNoche(juego.fase === 'noche');
+  }
+
+  mostrarNoche(si) {
+    this.cosasNoche.forEach((c) => c.setVisible(si));
   }
 
   // ---------- Interacciones ----------
@@ -136,7 +198,7 @@ export class LibraryScene extends BaseScene {
       if (r === 1) {
         cambiarFase('noche');
         this.ponerLuz();
-        this.brillos.forEach((b) => b.setVisible(true));
+        this.mostrarNoche(true);
         avisar('Cae la noche sobre la librería');
         this.empezarNoche();
       }
