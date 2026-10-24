@@ -4,21 +4,24 @@
 
 export const IMAGEN = { ancho: 512, alto: 384 };
 
-// Zonas por donde no se puede caminar
+// Zonas por donde no se puede caminar. En esta vista 3/4 los muebles solo bloquean
+// su base (lo que toca el suelo): por detrás se puede pasar y el mueble tapa con su silueta.
+// Para revisarlos: python3 tools/walk_map.py mapa.png
 export const MUROS = [
   { x: 0, y: 0, ancho: 512, alto: 150 }, // pared del fondo
   { x: 0, y: 150, ancho: 305, alto: 45 }, // estanterías, aparador y plantas del fondo
-  { x: 0, y: 195, ancho: 173, alto: 61 }, // barra: tramo de arriba
-  { x: 130, y: 195, ancho: 43, alto: 77 }, // barra: columna de la derecha
-  { x: 60, y: 272, ancho: 113, alto: 78 }, // barra: tramo de abajo
-  { x: 180, y: 236, ancho: 26, alto: 54 }, // taburetes junto a la barra
-  { x: 180, y: 304, ancho: 26, alto: 26 },
-  { x: 82, y: 358, ancho: 22, alto: 12 }, // taburetes de delante (se puede pasar por debajo)
-  { x: 130, y: 358, ancho: 22, alto: 12 },
-  { x: 243, y: 214, ancho: 75, alto: 58 }, // mesa redonda de arriba con sillas
-  { x: 272, y: 300, ancho: 93, alto: 80 }, // mesa redonda de abajo con sillas
-  { x: 377, y: 160, ancho: 135, alto: 112 }, // rincón de tatami
-  { x: 466, y: 272, ancho: 46, alto: 22 }, // planta de la derecha
+  { x: 0, y: 195, ancho: 173, alto: 55 }, // barra: tramo de arriba
+  { x: 130, y: 195, ancho: 43, alto: 83 }, // barra: columna de la derecha
+  { x: 60, y: 278, ancho: 113, alto: 72 }, // barra: tramo de abajo
+  { x: 182, y: 252, ancho: 22, alto: 10 }, // taburetes junto a la barra (solo las patas)
+  { x: 182, y: 280, ancho: 22, alto: 10 },
+  { x: 182, y: 320, ancho: 22, alto: 10 },
+  { x: 82, y: 360, ancho: 22, alto: 10 }, // taburetes de delante
+  { x: 130, y: 360, ancho: 22, alto: 10 },
+  { x: 246, y: 244, ancho: 70, alto: 28 }, // mesa redonda de arriba con sus sillas (base)
+  { x: 272, y: 334, ancho: 92, alto: 46 }, // mesa redonda de abajo con sus sillas (base)
+  { x: 377, y: 160, ancho: 135, alto: 112 }, // rincón de tatami (tarima elevada)
+  { x: 470, y: 280, ancho: 42, alto: 14 }, // planta de la derecha (maceta)
   { x: 494, y: 294, ancho: 18, alto: 74 }, // puerta de casa (pared derecha)
 ];
 
@@ -45,9 +48,9 @@ export const CASA = { x: 484, y: 330 }; // puerta corredera de la pared derecha,
 // Detrás de la barra: se entra por el rincón de abajo a la izquierda y se sigue por el hueco entre los dos tramos
 export const ZONA_BARISTA = [
   { x: 0, y: 256, ancho: 60, alto: 50 }, // rincón
-  { x: 60, y: 256, ancho: 72, alto: 16 }, // hueco entre los tramos de la barra
+  { x: 60, y: 250, ancho: 72, alto: 28 }, // hueco entre los tramos de la barra
 ];
-export const BARISTA = { x: 120, y: 266 }; // sitio donde se atiende, mirando a los taburetes
+export const BARISTA = { x: 120, y: 268 }; // sitio donde se atiende, mirando a los taburetes
 export const ESTANTERIAS = { x: 240, y: 200 };
 export const TATAMI = { x: 440, y: 282 };
 export const SITIO_ESPIRITU = { x: 222, y: 282 }; // donde espera el espíritu, junto a la barra
