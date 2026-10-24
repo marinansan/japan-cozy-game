@@ -8,12 +8,12 @@ import random
 import sys
 from PIL import Image
 
-CONTORNO = (34, 52, 36)
-OSCURO = (50, 85, 55)
-MEDIO = (66, 106, 59)
-CLARO = (98, 140, 70)
-BRILLO = (146, 180, 98)
-TALLO = (74, 62, 42)
+# Mismos colores que la hiedra que ya trae la imagen (contorno negro como el resto de plantas)
+CONTORNO = (0, 0, 0)
+SOMBRA = (58, 94, 52)
+MEDIO = (86, 126, 65)
+BRILLO = (122, 160, 82)
+TALLO = (13, 7, 8)
 
 # Cada rama: lista de puntos (x, y) por los que pasa el tallo
 RAMAS = [
@@ -34,21 +34,45 @@ RAMAS = [
     [(476, 45), (479, 32)],
 ]
 
-# Hojas de hiedra en forma de corazón. 0 = vacío, 1 = contorno, 2 = color, 3 = brillo
-HOJA_GRANDE = [
-    [0, 1, 1, 0, 1, 1, 0],
-    [1, 2, 3, 1, 3, 2, 1],
-    [1, 2, 2, 2, 2, 2, 1],
-    [0, 1, 2, 2, 2, 1, 0],
-    [0, 0, 1, 2, 1, 0, 0],
-    [0, 0, 0, 1, 0, 0, 0],
-]
-HOJA_PEQUENA = [
-    [0, 1, 0, 1, 0],
-    [1, 3, 1, 2, 1],
-    [1, 2, 2, 2, 1],
-    [0, 1, 2, 1, 0],
-    [0, 0, 1, 0, 0],
+# Hojas en punta (rombo o lágrima), como la hiedra original. 1 = hoja, 2 = brillo, 3 = sombra
+HOJAS = [
+    [
+        [0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 2, 1, 1, 0, 0],
+        [0, 2, 1, 1, 1, 1, 0],
+        [1, 1, 1, 1, 1, 1, 3],
+        [0, 1, 1, 1, 1, 3, 0],
+        [0, 0, 1, 1, 3, 0, 0],
+        [0, 0, 0, 3, 0, 0, 0],
+    ],
+    [
+        [0, 0, 2, 1, 0, 0],
+        [0, 2, 1, 1, 1, 0],
+        [2, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 3],
+        [0, 1, 1, 1, 3, 0],
+        [0, 0, 1, 3, 0, 0],
+        [0, 0, 0, 1, 0, 0],
+    ],
+    [
+        [0, 0, 1, 0, 0],
+        [0, 2, 1, 1, 0],
+        [1, 1, 1, 1, 3],
+        [0, 1, 1, 3, 0],
+        [0, 0, 3, 0, 0],
+    ],
+    [
+        [0, 2, 1, 0],
+        [2, 1, 1, 1],
+        [1, 1, 1, 3],
+        [0, 1, 3, 0],
+        [0, 0, 1, 0],
+    ],
+    [
+        [0, 1, 0],
+        [2, 1, 1],
+        [0, 1, 3],
+    ],
 ]
 
 
@@ -72,24 +96,32 @@ def main(entrada, salida):
     px = im.load()
     w, h = im.size
     hojas = []
+
+    def pintar(x, y, color):
+        if 0 <= x < w and 0 <= y < h:
+            px[x, y] = color
+
     for rama in RAMAS:
         for i, (x, y) in enumerate(puntos(rama)):
-            pintar(px, w, h, round(x), round(y), TALLO)
+            pintar(round(x), round(y), TALLO)
             if i % 3 == 0:
-                forma = random.choice([HOJA_GRANDE, HOJA_GRANDE, HOJA_PEQUENA])
+                forma = random.choice([HOJAS[0], HOJAS[1], HOJAS[1], HOJAS[2], HOJAS[3]])
+                ancho = len(forma[0])
                 # Hojas a un lado y a otro del tallo, alternando
-                lado = -len(forma[0]) + 1 if (i // 3) % 2 else 0
-                hojas.append((round(x) + lado, round(y) - 1, forma, random.choice([OSCURO, MEDIO, MEDIO, CLARO])))
-    # Las hojas de más arriba se dibujan antes, para que las de abajo queden delante
-    for x, y, forma, color in sorted(hojas, key=lambda h: h[1]):
-        for dy, fila in enumerate(forma):
-            for dx, v in enumerate(fila):
-                if v == 1:
-                    pintar(px, w, h, x + dx, y + dy, CONTORNO)
-                elif v == 2:
-                    pintar(px, w, h, x + dx, y + dy, color)
-                elif v == 3:
-                    pintar(px, w, h, x + dx, y + dy, BRILLO if color != OSCURO else MEDIO)
+                ox = round(x) - (ancho - 2 if (i // 3) % 2 else 1) + random.choice([-1, 0, 1])
+                oy = round(y) - 2 + random.choice([0, 1, 2])
+                hojas.append((ox, oy, forma))
+
+    # Cada hoja con su propio borde negro (así se distinguen aunque se toquen).
+    # Las de más arriba primero, para que las de abajo queden delante.
+    for ox, oy, forma in sorted(hojas, key=lambda h: h[1]):
+        celdas = {(ox + dx, oy + dy): v for dy, fila in enumerate(forma) for dx, v in enumerate(fila) if v}
+        for (x, y) in celdas:
+            for vx, vy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                if (x + vx, y + vy) not in celdas:
+                    pintar(x + vx, y + vy, CONTORNO)
+        for (x, y), v in celdas.items():
+            pintar(x, y, {1: MEDIO, 2: BRILLO, 3: SOMBRA}[v])
     im.save(salida)
 
 
