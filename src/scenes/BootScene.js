@@ -17,12 +17,17 @@ export class BootScene extends Phaser.Scene {
     this.load.image('prota-n', 'assets/prota/north.png');
     this.load.image('prota-e', 'assets/prota/east.png');
     this.load.image('prota-o', 'assets/prota/west.png');
+    // Animación de caminar: 6 fotogramas por dirección
+    for (const dir of ['south', 'east', 'north', 'west']) {
+      for (let i = 0; i < 6; i++) this.load.image(`caminar-${dir}-${i}`, `assets/prota/caminar/${dir}_${i}.png`);
+    }
   }
 
   create() {
     this.crearDegradado('nube', 256, 'rgba(232,231,236,0.95)');
     this.crearDegradado('brillo', 128, 'rgba(255,255,255,1)');
     this.crearSombra();
+    this.crearAnimaciones();
     this.scene.start('Library', { entrada: 'inicio' });
   }
 
@@ -41,9 +46,22 @@ export class BootScene extends Phaser.Scene {
     t.setFilter(Phaser.Textures.FilterMode.LINEAR);
   }
 
+  crearAnimaciones() {
+    const claves = { south: 'caminar-s', north: 'caminar-n', east: 'caminar-e', west: 'caminar-o' };
+    for (const [dir, clave] of Object.entries(claves)) {
+      this.anims.create({
+        key: clave,
+        frames: [0, 1, 2, 3, 4, 5].map((i) => ({ key: `caminar-${dir}-${i}` })),
+        frameRate: 10,
+        repeat: -1,
+      });
+    }
+  }
+
+  // Sombra suave y cálida bajo los pies (marrón oscuro, nunca gris)
   crearSombra() {
     const g = this.make.graphics({ add: false });
-    g.fillStyle(0x000000).fillEllipse(10, 4, 20, 8);
+    g.fillStyle(0xffffff).fillEllipse(10, 4, 20, 8); // blanca: el color lo pone el tinte
     g.generateTexture('sombra', 20, 8);
     g.destroy();
   }

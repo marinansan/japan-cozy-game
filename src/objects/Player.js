@@ -9,7 +9,8 @@ const RADIO_JOYSTICK = 40;
 export class Player {
   constructor(scene, x, y) {
     this.scene = scene;
-    this.sombra = scene.add.image(x, y, 'sombra').setAlpha(0.35);
+    this.sombra = scene.add.image(x, y, 'sombra').setTint(0x3b2418).setAlpha(0.28);
+    this.mirando = 's';
     // El punto de apoyo del sprite son los pies, para ordenar bien quién tapa a quién
     // Las imágenes miden 84x84 y los pies están a 73 px de arriba
     this.sprite = scene.physics.add.sprite(x, y, 'prota-s').setOrigin(0.5, 73 / 84);
@@ -19,7 +20,6 @@ export class Player {
     this.teclas = scene.input.keyboard.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT');
     this.destino = null;
     this.atascado = 0;
-    this.paso = 0;
 
     this.joy = { activo: false, id: null, base: new Phaser.Math.Vector2(), vec: new Phaser.Math.Vector2() };
     this.dibujoJoy = scene.add.graphics().setScrollFactor(0).setDepth(9500);
@@ -103,13 +103,13 @@ export class Player {
     // Mirar hacia donde camina y un pequeño balanceo al andar
     const andando = v.length() > 0;
     if (andando) {
-      if (Math.abs(vy) > Math.abs(vx)) this.sprite.setTexture(vy < 0 ? 'prota-n' : 'prota-s');
-      else this.sprite.setTexture(vx < 0 ? 'prota-o' : 'prota-e');
-      // Balanceo provisional hasta tener la animación de caminar
-      this.paso += this.scene.game.loop.delta;
-      this.sprite.setAngle(Math.sin(this.paso / 70) * 2);
-    } else {
-      this.sprite.setAngle(0);
+      if (Math.abs(vy) > Math.abs(vx)) this.mirando = vy < 0 ? 'n' : 's';
+      else this.mirando = vx < 0 ? 'o' : 'e';
+      this.sprite.anims.play(`caminar-${this.mirando}`, true);
+    } else if (this.sprite.anims.isPlaying) {
+      // Quieta: la imagen de pie mirando hacia donde iba
+      this.sprite.anims.stop();
+      this.sprite.setTexture(`prota-${this.mirando}`);
     }
 
     this.sprite.setDepth(this.sprite.y);

@@ -1,9 +1,11 @@
-"""Deja los ojos de la protagonista siempre marrones.
+"""Limpia las imágenes de la protagonista que salen de PixelLab.
 
-PixelLab a veces pinta el iris azul o gris en las vistas de lado o en algunos
-fotogramas. Este script cambia esos colores por marrones solo en la zona de la cara.
+- Ojos siempre marrones: PixelLab a veces pinta el iris azul, gris o morado en
+  las vistas de lado o en algunos fotogramas. Se cambian por marrones (solo en la cara).
+- Sin sombra gris: se borra la mancha gris que a veces dibuja bajo los pies
+  (el juego pone su propia sombra suave).
 
-Uso: python3 tools/fix_eyes.py imagen.png [más imágenes...]
+Uso: python3 tools/clean_prota.py imagen.png [más imágenes...]
 """
 import sys
 from PIL import Image
@@ -20,8 +22,14 @@ CAMBIOS = {
 
 
 def es_azulado(c):
+    # Azul o morado. Las sombras del pelo son algo moradas pero con más rojo que azul.
     r, g, b = c[:3]
-    return b > r + 12 and b > g
+    return b > r + 10 and b > g
+
+
+def es_sombra_gris(c):
+    r, g, b = c[:3]
+    return abs(r - g) < 6 and abs(g - b) < 6 and 90 < r < 180
 
 
 def arreglar(ruta):
@@ -44,6 +52,13 @@ def arreglar(ruta):
                 nuevo = (int(min(255, l * 1.35)), int(l * 0.75), int(l * 0.55))
             if nuevo:
                 px[x, y] = (*nuevo, c[3])
+                n += 1
+    # Sombra gris bajo los pies (último cuarto del personaje)
+    for y in range(int(caja[3] - (caja[3] - caja[1]) * 0.15), h):
+        for x in range(w):
+            c = px[x, y]
+            if c[3] and es_sombra_gris(c):
+                px[x, y] = (0, 0, 0, 0)
                 n += 1
     im.save(ruta)
     return n
