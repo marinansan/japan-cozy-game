@@ -93,7 +93,7 @@ export class LibraryScene extends BaseScene {
     L.VENTANAS_NOCHE.forEach((v) => {
       cosas.push(
         this.add.image(OX + v.x, OY + v.y, 'brillo').setTint(0x8f6ad8).setBlendMode(ADD)
-          .setScale(v.escala).setAlpha(0.3).setDepth(9001),
+          .setScale(v.escala).setAlpha(0.14).setDepth(9001),
       );
     });
 

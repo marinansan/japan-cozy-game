@@ -28,6 +28,17 @@ def luz(c):
     return 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2]
 
 
+def cerca_de_contorno(px, x, y, radio=2):
+    for dy in range(-radio, radio + 1):
+        for dx in range(-radio, radio + 1):
+            try:
+                if max(px[x + dx, y + dy][:3]) < 16:
+                    return True
+            except IndexError:
+                pass
+    return False
+
+
 def main():
     random.seed(7)
     im = Image.open(ORIGEN).convert('RGBA')
@@ -40,9 +51,12 @@ def main():
             for x in range(x0, x1):
                 r, g, b, _ = px[x, y]
                 # Solo los cristales: el jardín es verde claro; los marcos y las plantas son más oscuros
-                if not (g > r + 15 and g > b + 10 and luz((r, g, b)) > 110):
+                if not (g > r + 15 and g >= b - 8 and luz((r, g, b)) > 80):
                     continue
-                t = min(1, max(0, (luz((r, g, b)) - 120) / 85))
+                # Las hojas de la hiedra tienen contorno negro: lo que está junto a uno no es cristal
+                if cerca_de_contorno(px, x, y):
+                    continue
+                t = min(1, max(0, (luz((r, g, b)) - 95) / 100))
                 c = mezcla(SILUETA, cielo, t)
                 if t > 0.6 and random.random() < 0.035:
                     c = random.choice([(255, 250, 230), (230, 225, 255), (255, 226, 170)])
