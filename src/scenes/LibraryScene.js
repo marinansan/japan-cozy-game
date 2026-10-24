@@ -45,12 +45,17 @@ export class LibraryScene extends BaseScene {
 
   // Copias recortadas de la imagen que tapan al protagonista cuando pasa por detrás
   colocarFrentes() {
-    L.FRENTES.forEach((f) => {
-      this.add
-        .image(OX, OY, 'libreria-dentro')
-        .setOrigin(0)
-        .setCrop(f.x, f.y, f.ancho, f.alto)
-        .setDepth(OY + f.base);
+    L.FRENTES.forEach((f, i) => {
+      if (f.silueta) {
+        // Solo el mueble, sin el suelo de alrededor
+        this.add.image(OX + f.x, OY + f.y, `frente-${i}`).setOrigin(0).setDepth(OY + f.base);
+      } else {
+        this.add
+          .image(OX, OY, 'libreria-dentro')
+          .setOrigin(0)
+          .setCrop(f.x, f.y, f.ancho, f.alto)
+          .setDepth(OY + f.base);
+      }
     });
   }
 
@@ -142,12 +147,25 @@ export class LibraryScene extends BaseScene {
     this.interaccion({ ...p(L.TATAMI), radio: 40, texto: 'Mirar', accion: () => hablar(TEXTOS.tatami) });
     this.interaccion({
       ...p(L.BARISTA),
-      radio: 34,
+      radio: 140,
       texto: 'Barra',
-      // Solo se atiende desde el rincón de detrás de la barra
-      activa: () => this.jugador.pies().x < OX + 60,
-      accion: () => hablar(juego.fase === 'noche' ? TEXTOS.barraNoche : TEXTOS.barraVacia),
+      // Solo se atiende desde detrás de la barra
+      activa: () => this.detrasDeLaBarra(),
+      accion: async () => {
+        // Primero camina hasta su sitio, mirando a los taburetes
+        const sitio = p(L.BARISTA);
+        // Desde el rincón, primero sube hasta el hueco para no chocar con la esquina de la barra
+        if (this.jugador.pies().x < OX + 60) await this.jugador.irA(OX + 40, sitio.y);
+        await this.jugador.irA(sitio.x, sitio.y);
+        this.jugador.mirar('e');
+        await hablar(juego.fase === 'noche' ? TEXTOS.barraNoche : TEXTOS.barraVacia);
+      },
     });
+  }
+
+  detrasDeLaBarra() {
+    const { x, y } = this.jugador.pies();
+    return L.ZONA_BARISTA.some((z) => x >= OX + z.x && x <= OX + z.x + z.ancho && y >= OY + z.y && y <= OY + z.y + z.alto);
   }
 
   async usarPuerta() {

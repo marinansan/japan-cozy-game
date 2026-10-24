@@ -56,6 +56,21 @@ export class Player {
     return { x: this.sprite.x, y: this.sprite.y };
   }
 
+  // Camina sola hasta un punto. Termina al llegar (o si algo la para por el camino).
+  irA(x, y) {
+    this.destino = new Phaser.Math.Vector2(x, y);
+    this.atascado = 0;
+    return new Promise((resolver) => {
+      this.alLlegar = resolver;
+    });
+  }
+
+  mirar(dir) {
+    this.mirando = dir;
+    this.sprite.anims.stop();
+    this.sprite.setTexture(`prota-${dir}`);
+  }
+
   parar() {
     this.destino = null;
     this.sprite.setVelocity(0, 0);
@@ -110,6 +125,12 @@ export class Player {
       // Quieta: la imagen de pie mirando hacia donde iba
       this.sprite.anims.stop();
       this.sprite.setTexture(`prota-${this.mirando}`);
+    }
+
+    if (this.alLlegar && !this.destino) {
+      const resolver = this.alLlegar;
+      this.alLlegar = null;
+      resolver();
     }
 
     this.sprite.setDepth(this.sprite.y);

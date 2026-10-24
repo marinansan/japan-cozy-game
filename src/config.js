@@ -3,8 +3,8 @@
 export const ANCHO = 960;
 export const ALTO = 540;
 
-// Velocidad al caminar (píxeles por segundo)
-export const VELOCIDAD = 130;
+// Velocidad al caminar (píxeles por segundo). Despacio: es un juego sin prisa.
+export const VELOCIDAD = 85;
 
 // Color de la luz en cada momento del día (se multiplica sobre la escena).
 // Dentro de la librería la luz es más cálida; fuera, más suave.

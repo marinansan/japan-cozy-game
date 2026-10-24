@@ -67,9 +67,15 @@ export class BaseScene extends Phaser.Scene {
   }
 
   async usar(it) {
-    if (juego.ocupado) return;
+    // enAccion evita lanzar otra acción mientras dura esta (por ejemplo, mientras camina sola)
+    if (juego.ocupado || this.enAccion) return;
+    this.enAccion = true;
     this.jugador.parar();
-    await it.accion();
+    try {
+      await it.accion();
+    } finally {
+      this.enAccion = false;
+    }
   }
 
   update() {

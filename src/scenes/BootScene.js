@@ -1,5 +1,6 @@
 // Carga las imágenes y crea las texturas provisionales que aún no tienen arte.
 import Phaser from 'phaser';
+import { FRENTES } from '../data/libraryLayout.js';
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -10,6 +11,7 @@ export class BootScene extends Phaser.Scene {
     this.load.image('libreria-fuera', 'assets/libreria-fuera.png');
     this.load.image('libreria-dentro', 'assets/libreria-dentro.png');
     this.load.image('libreria-noche', 'assets/libreria-noche.png');
+    FRENTES.forEach((f, i) => f.silueta && this.load.image(`frente-${i}`, `assets/frentes/frente_${i}.png`));
     this.load.image('okiku', 'assets/okiku.png');
     this.load.image('suelo-hierba', 'assets/suelo-hierba.png');
     // Protagonista (PixelLab): una imagen por dirección
@@ -52,7 +54,7 @@ export class BootScene extends Phaser.Scene {
       this.anims.create({
         key: clave,
         frames: [0, 1, 2, 3, 4, 5].map((i) => ({ key: `caminar-${dir}-${i}` })),
-        frameRate: 10,
+        frameRate: 7, // pasos al ritmo de la velocidad tranquila
         repeat: -1,
       });
     }

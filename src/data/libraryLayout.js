@@ -22,26 +22,32 @@ export const MUROS = [
   { x: 494, y: 294, ancho: 18, alto: 74 }, // puerta de casa (pared derecha)
 ];
 
-// Trozos de la imagen que se dibujan "delante" del protagonista cuando
-// está detrás de ellos (su base marca quién tapa a quién)
+// Trozos de la imagen que se dibujan "delante" de la protagonista cuando
+// está detrás de ellos (su base marca quién tapa a quién). Con silueta: true se usa
+// solo el mueble, sin el suelo de alrededor (public/assets/frentes/, tools/make_front_masks.py).
+// La barra va en rectángulo porque es casi todo mostrador. El tatami no tapa: es una tarima baja.
 export const FRENTES = [
   { x: 0, y: 192, ancho: 176, alto: 64, base: 256 }, // barra (arriba)
   { x: 128, y: 256, ancho: 48, alto: 16, base: 272 },
   { x: 58, y: 270, ancho: 120, alto: 82, base: 350 }, // barra (abajo)
-  { x: 176, y: 226, ancho: 34, alto: 66, base: 290 }, // taburetes
-  { x: 176, y: 294, ancho: 34, alto: 38, base: 330 },
-  { x: 76, y: 326, ancho: 82, alto: 52, base: 374 },
-  { x: 238, y: 200, ancho: 86, alto: 76, base: 272 }, // mesas
-  { x: 266, y: 288, ancho: 104, alto: 96, base: 380 },
-  { x: 374, y: 150, ancho: 138, alto: 124, base: 272 }, // tatami
-  { x: 462, y: 218, ancho: 50, alto: 78, base: 294 }, // planta de la derecha
-];
+  { x: 176, y: 226, ancho: 34, alto: 66, base: 290, silueta: true }, // taburetes
+  { x: 176, y: 294, ancho: 34, alto: 38, base: 330, silueta: true },
+  { x: 76, y: 326, ancho: 82, alto: 52, base: 374, silueta: true },
+  { x: 238, y: 200, ancho: 86, alto: 76, base: 272, silueta: true }, // mesas
+  { x: 266, y: 288, ancho: 104, alto: 96, base: 380, silueta: true },
+  { x: 462, y: 218, ancho: 50, alto: 78, base: 294, silueta: true }, // planta de la derecha
+]
 
 // Sitios importantes
 export const ENTRADA = { x: 333, y: 176 }; // la noren del fondo: entrada principal, desde el jardín
 export const CARTEL = { x: 333, y: 64 }; // cartel de abierto/cerrado, encima de la noren
 export const CASA = { x: 484, y: 330 }; // puerta corredera de la pared derecha, que sube a casa
-export const BARISTA = { x: 32, y: 270 }; // rincón detrás de la barra (se entra por abajo a la izquierda)
+// Detrás de la barra: se entra por el rincón de abajo a la izquierda y se sigue por el hueco entre los dos tramos
+export const ZONA_BARISTA = [
+  { x: 0, y: 256, ancho: 60, alto: 50 }, // rincón
+  { x: 60, y: 256, ancho: 72, alto: 16 }, // hueco entre los tramos de la barra
+];
+export const BARISTA = { x: 120, y: 266 }; // sitio donde se atiende, mirando a los taburetes
 export const ESTANTERIAS = { x: 240, y: 200 };
 export const TATAMI = { x: 440, y: 282 };
 export const SITIO_ESPIRITU = { x: 222, y: 282 }; // donde espera el espíritu, junto a la barra
