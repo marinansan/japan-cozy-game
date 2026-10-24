@@ -15,6 +15,11 @@ export const TEXTOS = {
     'En uno pone, con su letra apretada: «Para leer con lluvia».',
   ],
 
+  tatami: [
+    'El rincón de tatami. La abuela leía aquí por las tardes, con los pies recogidos.',
+    'El cojín todavía tiene la forma de alguien.',
+  ],
+
   barraVacia: ['Todo listo detrás de la barra.', 'Aún no ha llegado nadie. Hay tiempo para un té.'],
   barraNoche: ['La tetera todavía está tibia.'],
 
