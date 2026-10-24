@@ -18,9 +18,7 @@ export const MUROS = [
   { x: 243, y: 214, ancho: 75, alto: 58 }, // mesa redonda de arriba con sillas
   { x: 272, y: 300, ancho: 93, alto: 80 }, // mesa redonda de abajo con sillas
   { x: 377, y: 160, ancho: 135, alto: 112 }, // rincón de tatami
-  { x: 378, y: 352, ancho: 36, alto: 24 }, // planta grande
-  { x: 466, y: 272, ancho: 46, alto: 22 }, // plantas de la derecha
-  { x: 470, y: 332, ancho: 42, alto: 22 },
+  { x: 466, y: 272, ancho: 46, alto: 22 }, // planta de la derecha
 ];
 
 // Trozos de la imagen que se dibujan "delante" del protagonista cuando
@@ -34,10 +32,8 @@ export const FRENTES = [
   { x: 76, y: 326, ancho: 82, alto: 52, base: 374 },
   { x: 238, y: 200, ancho: 86, alto: 76, base: 272 }, // mesas
   { x: 266, y: 288, ancho: 104, alto: 96, base: 380 },
-  { x: 368, y: 282, ancho: 52, alto: 96, base: 376 }, // planta grande
   { x: 374, y: 150, ancho: 138, alto: 124, base: 272 }, // tatami
-  { x: 462, y: 218, ancho: 50, alto: 78, base: 294 }, // plantas de la derecha
-  { x: 466, y: 306, ancho: 46, alto: 50, base: 354 },
+  { x: 462, y: 218, ancho: 50, alto: 78, base: 294 }, // planta de la derecha
 ];
 
 // Sitios importantes

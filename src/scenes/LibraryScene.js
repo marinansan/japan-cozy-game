@@ -83,8 +83,8 @@ export class LibraryScene extends BaseScene {
     this.cartel.setText(juego.fase === 'mañana' ? 'ABIERTO' : 'CERRADO');
   }
 
-  // La noche: cielo estrellado en las ventanas, farolillos en ámbar,
-  // charcos de luz cálida y lucecitas flotando. Todo va por encima de la
+  // La noche: cielo estrellado en las ventanas, farolillos en ámbar
+  // y charcos de luz cálida. Todo va por encima de la
   // capa de luz (que oscurece en violeta) para que brille de verdad.
   crearNoche() {
     const cosas = [];
@@ -117,34 +117,6 @@ export class LibraryScene extends BaseScene {
       });
       cosas.push(halo, charco);
     });
-
-    // Lucecitas que flotan despacio por la sala (luciérnagas)
-    const azar = new Phaser.Math.RandomDataGenerator(['luciernagas']);
-    for (let i = 0; i < 22; i++) {
-      const x = OX + azar.between(20, L.IMAGEN.ancho - 20);
-      const y = OY + azar.between(30, L.IMAGEN.alto - 20);
-      const luz = this.add.image(x, y, 'brillo').setTint(azar.pick([0xffd58a, 0xffc070, 0xfff0c0]))
-        .setBlendMode(ADD).setScale(azar.realInRange(0.05, 0.09)).setAlpha(0).setDepth(9003);
-      this.tweens.add({
-        targets: luz,
-        x: x + azar.between(-40, 40),
-        y: y + azar.between(-30, 20),
-        duration: azar.between(5000, 9000),
-        yoyo: true,
-        repeat: -1,
-        ease: 'Sine.inOut',
-      });
-      this.tweens.add({
-        targets: luz,
-        alpha: { from: 0, to: azar.realInRange(0.6, 1) },
-        duration: azar.between(1200, 2600),
-        delay: azar.between(0, 3000),
-        yoyo: true,
-        repeat: -1,
-        ease: 'Sine.inOut',
-      });
-      cosas.push(luz);
-    }
 
     // Que ninguna luz se salga de la sala
     const forma = this.make.graphics({ add: false }).fillStyle(0xffffff).fillRect(OX, OY, L.IMAGEN.ancho, L.IMAGEN.alto);
