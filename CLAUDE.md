@@ -52,6 +52,11 @@ Las decisiones de abajo son **más recientes** que ese prompt y mandan sobre él
   - Los vecinos usan `src/objects/Npc.js` (caminar por puntos, mirar, "!"); sirve para los siguientes clientes.
 - **Espíritus:** translúcidos con halo lavanda (la señora Okiku, `public/assets/okiku.png`).
 
+- **Reloj (arriba a la derecha):** cúpula de madera en semicírculo con el cielo de mañana, tarde y noche y una aguja
+  (sin hora); el medallón muestra la **fase de la niebla** (`faseNiebla()` = recuerdos + 1), el "nivel" del juego.
+  Imágenes `public/assets/ui/reloj-{manana,tarde,noche}.png`, hechas con `tools/make_clock.py` desde la cúpula de PixelLab.
+  El marcador de la izquierda muestra el día, los recuerdos 🌙 y los yenes 💴.
+
 ## Cómo probar
 
 `npm install` y `npm run dev`. Para comprobar cambios, usar Playwright (ya instalado) y hacer capturas.

@@ -43,7 +43,6 @@ html, body {
   font-size: 15px;
   pointer-events: none !important;
 }
-.hud .fase { font-weight: bold; }
 .hud .sep { color: var(--papel-borde); }
 
 /* Pista de acción en PC: "[E] Entrar" */
@@ -174,11 +173,55 @@ html, body {
   .hud { font-size: 13px; }
 }
 
-/* Botón de pantalla completa, arriba a la derecha */
-.pantalla-completa {
+/* Esquina de arriba a la derecha: reloj y, debajo, el botón de pantalla completa */
+.esquina {
   position: absolute;
-  top: calc(12px + env(safe-area-inset-top, 0px));
+  top: calc(10px + env(safe-area-inset-top, 0px));
   right: calc(12px + env(safe-area-inset-right, 0px));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none !important;
+}
+.esquina > * { pointer-events: auto; }
+
+/* Reloj de cúpula (imágenes de 115x56 px, ampliadas sin emborronar) */
+.reloj {
+  --px: 2px;
+  position: relative;
+  width: calc(115 * var(--px));
+  height: calc(56 * var(--px));
+  filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.25));
+}
+.reloj-imagen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+.reloj-imagen.visible { opacity: 1; }
+.reloj-numero {
+  position: absolute;
+  left: 90.87%;
+  top: 60.71%;
+  transform: translate(-50%, -50%);
+  font: bold calc(11 * var(--px)) / 1 'Georgia', serif;
+  color: #5b3a20;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-height: 500px) {
+  .reloj { --px: 1.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reloj-imagen { transition: none; }
+}
+
+/* Botón de pantalla completa */
+.pantalla-completa {
   width: 40px;
   height: 40px;
   border-radius: 50%;

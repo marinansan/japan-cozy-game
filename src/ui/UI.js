@@ -1,11 +1,11 @@
 // Interfaz en HTML: marcador, bocadillos con texto letra a letra,
 // preguntas con opciones, pista/botón de acción y avisos cortos.
-import { juego, escuchar } from '../systems/GameState.js';
+import { juego, escuchar, faseNiebla } from '../systems/GameState.js';
 import { NOMBRE_FASE } from '../config.js';
 
 const VELOCIDAD_TEXTO = 28; // milisegundos por letra
 
-let raiz, hud, pista, boton, velo, caja, quien, texto, flecha, opciones, aviso;
+let raiz, hud, pista, boton, velo, caja, quien, texto, flecha, opciones, aviso, esquina, reloj;
 let accionActual = null;
 let textoAccion = null;
 let alAvanzar = null; // qué hacer al pulsar o tocar mientras hay un diálogo
@@ -25,6 +25,9 @@ export function iniciarUI({ pantallaCompleta } = {}) {
   if (esTactil()) raiz.classList.add('tactil');
 
   hud = crear('div', 'hud');
+  // Arriba a la derecha: el reloj y, debajo, el botón de pantalla completa
+  esquina = crear('div', 'esquina');
+  reloj = crearReloj();
   crearPantallaCompleta(pantallaCompleta);
   // En el móvil en vertical, un aviso para girarlo
   crear('div', 'girar').innerHTML = '<div class="girar-icono">📱</div><p>Gira el móvil para jugar</p>';
@@ -74,7 +77,7 @@ export function iniciarUI({ pantallaCompleta } = {}) {
 function crearPantallaCompleta(alternar) {
   const disponible = document.fullscreenEnabled || document.webkitFullscreenEnabled;
   if (!alternar || !disponible) return;
-  const boton = crear('button', 'pantalla-completa');
+  const boton = crear('button', 'pantalla-completa', esquina);
   boton.type = 'button';
   boton.title = 'Pantalla completa';
   boton.setAttribute('aria-label', 'Pantalla completa');
@@ -90,11 +93,35 @@ function crearPantallaCompleta(alternar) {
   });
 }
 
+// Reloj de cúpula: el cielo de mañana, tarde y noche con una aguja, y en el medallón
+// el número de la fase de la niebla. Una imagen por momento del día, con fundido entre ellas.
+const IMAGEN_FASE = { mañana: 'manana', tarde: 'tarde', noche: 'noche' };
+
+function crearReloj() {
+  const el = crear('div', 'reloj', esquina);
+  el.setAttribute('role', 'img');
+  for (const [fase, archivo] of Object.entries(IMAGEN_FASE)) {
+    const img = crear('img', 'reloj-imagen', el);
+    img.src = `assets/ui/reloj-${archivo}.png`;
+    img.alt = '';
+    img.dataset.fase = fase;
+  }
+  crear('span', 'reloj-numero', el);
+  return el;
+}
+
+function pintarReloj() {
+  reloj.querySelectorAll('.reloj-imagen').forEach((img) => img.classList.toggle('visible', img.dataset.fase === juego.fase));
+  reloj.querySelector('.reloj-numero').textContent = faseNiebla();
+  reloj.setAttribute('aria-label', `${NOMBRE_FASE[juego.fase]}. Fase de la niebla ${faseNiebla()}`);
+  reloj.title = `${NOMBRE_FASE[juego.fase]} · Fase de la niebla ${faseNiebla()}`;
+}
+
 function pintarHUD() {
   hud.innerHTML =
     `<span>Día ${juego.dia}</span><span class="sep">·</span>` +
-    `<span class="fase">${NOMBRE_FASE[juego.fase]}</span><span class="sep">·</span>` +
     `<span>🌙 ${juego.recuerdos}</span><span>💴 ${juego.yenes}</span>`;
+  pintarReloj();
 }
 
 // La escena dice qué se puede hacer ahora mismo (o null si nada)

@@ -20,6 +20,12 @@ export function avisar() {
   oyentes.forEach((fn) => fn(juego));
 }
 
+// Fase de la niebla: el "nivel" del juego. Empieza en 1 y sube con cada recuerdo recuperado,
+// que es lo que abre una zona nueva del pueblo. Se muestra en el medallón del reloj.
+export function faseNiebla() {
+  return juego.recuerdos + 1;
+}
+
 export function cambiarFase(fase) {
   juego.fase = fase;
   avisar();
