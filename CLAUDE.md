@@ -57,7 +57,9 @@ Las decisiones de abajo son **más recientes** que ese prompt y mandan sobre él
   Imágenes `public/assets/ui/reloj-{manana,tarde,noche}.png`, hechas con `tools/make_clock.py` desde la cúpula de PixelLab.
   Debajo del reloj, los **yenes**: moneda dorada con el ¥ (`tools/make_yen_coin.py`) y la cantidad en la letra
   pixelada **Silkscreen** sobre una placa de madera que se estira (`tools/make_plaque_parts.py`).
-  Ya no hay marcador a la izquierda: ahí irá el **libro de Recuerdos** (misiones, recuerdos y personajes).
+  Arriba a la izquierda, el **libro de Recuerdos** (libro de piel con luna dorada dentro de un círculo claro con borde
+  oscuro, `tools/make_book_icon.py`); abrirá las misiones, los recuerdos y los personajes (aún por diseñar).
+  Libro, reloj y yenes son iconos secundarios: 1 px de pantalla por píxel del dibujo (`--px` en `src/ui/ui.css`).
   Todo el texto de la interfaz que sea número va en Silkscreen ("todo en formato pixel").
 
 ## Cómo probar

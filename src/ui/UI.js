@@ -5,7 +5,7 @@ import { NOMBRE_FASE } from '../config.js';
 
 const VELOCIDAD_TEXTO = 28; // milisegundos por letra
 
-let raiz, pista, boton, velo, caja, quien, texto, flecha, opciones, aviso, esquina, reloj, yenes;
+let raiz, pista, boton, velo, caja, quien, texto, flecha, opciones, aviso, esquina, reloj, yenes, libro;
 let accionActual = null;
 let textoAccion = null;
 let alAvanzar = null; // qué hacer al pulsar o tocar mientras hay un diálogo
@@ -24,6 +24,8 @@ export function iniciarUI({ pantallaCompleta } = {}) {
   raiz = document.getElementById('ui');
   if (esTactil()) raiz.classList.add('tactil');
 
+  // Arriba a la izquierda: el libro de Recuerdos (misiones, recuerdos y personajes)
+  libro = crearLibro();
   // Arriba a la derecha: el reloj, los yenes y el botón de pantalla completa
   esquina = crear('div', 'esquina');
   reloj = crearReloj();
@@ -115,6 +117,19 @@ function pintarReloj() {
   reloj.querySelector('.reloj-numero').textContent = faseNiebla();
   reloj.setAttribute('aria-label', `${NOMBRE_FASE[juego.fase]}. Fase de la niebla ${faseNiebla()}`);
   reloj.title = `${NOMBRE_FASE[juego.fase]} · Fase de la niebla ${faseNiebla()}`;
+}
+
+function crearLibro() {
+  const el = crear('button', 'libro');
+  el.type = 'button';
+  el.title = 'Libro de Recuerdos';
+  el.setAttribute('aria-label', 'Libro de Recuerdos');
+  const img = crear('img', '', el);
+  img.src = 'assets/ui/libro-recuerdos.png';
+  img.alt = '';
+  // De momento solo avisa: el libro (misiones, recuerdos y personajes) se diseña en el siguiente paso
+  el.addEventListener('click', () => avisar('El libro de Recuerdos se abrirá muy pronto'));
+  return el;
 }
 
 // Yenes: moneda dorada con el ¥ y la cantidad, sobre una placa de madera que se estira
