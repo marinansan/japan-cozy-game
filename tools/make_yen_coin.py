@@ -4,22 +4,19 @@ Uso: python3 tools/make_yen_coin.py  (crea public/assets/ui/moneda-yen.png)
 """
 from PIL import Image
 
-ORIGEN = 'art/source/ui/moneda.png'
+ORIGEN = 'art/source/ui/moneda-peque.png'  # moneda reducida con PixelLab (22x22)
 DESTINO = 'public/assets/ui/moneda-yen.png'
-HUECO = (10, 10, 22, 22)  # el agujero cuadrado de la moneda, que se rellena
+HUECO = (7, 7, 15, 15)  # el agujero cuadrado de la moneda, que se rellena
 CARA = (239, 174, 0, 255)
 TRAZO = (140, 58, 4, 255)
-LUZ = (250, 222, 120, 255)
 
-YEN = [  # trazo grueso para que se lea aunque la moneda sea pequeña
-    'XX....XX',
-    '.XX..XX.',
-    '..XXXX..',
-    'XXXXXXXX',
-    '...XX...',
-    'XXXXXXXX',
-    '...XX...',
-    '...XX...',
+YEN = [  # ¥ pequeño pero con trazo marcado, para la moneda de 22 px
+    'X....X',
+    '.X..X.',
+    'XXXXXX',
+    '..XX..',
+    'XXXXXX',
+    '..XX..',
 ]
 
 
@@ -29,14 +26,12 @@ def main():
     for y in range(HUECO[1], HUECO[3]):
         for x in range(HUECO[0], HUECO[2]):
             px[x, y] = CARA
-    x0, y0 = 12, 12
+    x0, y0 = 8, 8
     for dy, fila in enumerate(YEN):
         for dx, c in enumerate(fila):
             if c == 'X':
                 px[x0 + dx, y0 + dy] = TRAZO
-                # un brillo debajo a la derecha, como grabado en la moneda
-                if px[x0 + dx + 1, y0 + dy + 1] == CARA:
-                    px[x0 + dx + 1, y0 + dy + 1] = LUZ
+                # (sin brillo alrededor: en la moneda pequeña le quitaba contraste al ¥)
     im.save(DESTINO)
 
 

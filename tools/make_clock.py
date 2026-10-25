@@ -9,11 +9,13 @@ import math
 from collections import deque
 from PIL import Image
 
-ORIGEN = 'art/source/reloj/cupula.png'
+ORIGEN = 'art/source/reloj/cupula-peque.png'  # cúpula reducida con PixelLab (resize)
+ORIGEN_MEDALLON = 'art/source/reloj/cupula.png'  # el medallón se toma de la original, más grande, para un número legible
 # (la cúpula se recorta sola a su contenido, una vez quitado el medallón)
-MEDALLON = (97, 7, 118, 27)  # caja del medallón suelto
-EJE_ORIGINAL = (62, 47)  # centro de la aguja en la imagen original
-LARGO = 27
+MEDALLON = (97, 7, 118, 27)  # caja del medallón suelto en la imagen original
+MEDALLON_PEQUE = (67, 5, 81, 19)  # caja del medallón pequeño, que se quita de la cúpula reducida
+EJE_ORIGINAL = (39, 33)  # centro de la aguja en la cúpula reducida
+LARGO = 19
 ANGULOS = {'manana': 150, 'tarde': 90, 'noche': 30}  # grados, 0 = derecha, 90 = arriba
 
 CONTORNO = (20, 12, 10, 255)
@@ -33,29 +35,26 @@ def aguja(im, angulo):
     ex, ey = EJE
     rad = math.radians(angulo)
     pasos = [(ex + math.cos(rad) * t, ey - math.sin(rad) * t) for t in [i * 0.5 for i in range(LARGO * 2 + 1)]]
-    # Primero el contorno negro (más grueso), luego la madera encima
+    # Aguja fina: un píxel de madera con su contorno negro alrededor
     for x, y in pasos:
-        for dx in (-1, 0, 1, 2):
-            for dy in (-1, 0, 1, 2):
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
                 punto(px, w, h, round(x) + dx, round(y) + dy, CONTORNO)
     for i, (x, y) in enumerate(pasos):
-        color = MADERA_CLARA if i % 6 < 2 else MADERA
-        for dx in (0, 1):
-            for dy in (0, 1):
-                punto(px, w, h, round(x) + dx, round(y) + dy, color)
+        punto(px, w, h, round(x), round(y), MADERA_CLARA if i % 6 < 2 else MADERA)
     # Eje de latón
-    for dx in range(-3, 5):
-        for dy in range(-3, 5):
-            d = math.hypot(dx - 0.5, dy - 0.5)
-            if d <= 3.6:
-                punto(px, w, h, ex + dx, ey + dy, CONTORNO if d > 2.5 else LATON)
+    for dx in range(-2, 3):
+        for dy in range(-2, 3):
+            d = math.hypot(dx, dy)
+            if d <= 2.4:
+                punto(px, w, h, ex + dx, ey + dy, CONTORNO if d > 1.4 else LATON)
 
 
-def separar_medallon(base):
+def separar_medallon(base, caja):
     """Devuelve el medallón recortado y la imagen sin él (son piezas que no se tocan)."""
     px = base.load()
     w, h = base.size
-    inicio = ((MEDALLON[0] + MEDALLON[2]) // 2, (MEDALLON[1] + MEDALLON[3]) // 2)
+    inicio = ((caja[0] + caja[2]) // 2, (caja[1] + caja[3]) // 2)
     pieza, cola = {inicio}, deque([inicio])
     while cola:
         x, y = cola.popleft()
@@ -68,21 +67,22 @@ def separar_medallon(base):
     for q in pieza:
         mp[q] = px[q]
         px[q] = (0, 0, 0, 0)
-    return medallon.crop(MEDALLON), base
+    return medallon.crop(caja), base
 
 
 def main():
     base = Image.open(ORIGEN).convert('RGBA')
-    medallon, base = separar_medallon(base)
+    _, base = separar_medallon(base, MEDALLON_PEQUE)
+    medallon, _ = separar_medallon(Image.open(ORIGEN_MEDALLON).convert('RGBA'), MEDALLON)
     caja = base.getbbox()
     cupula = base.crop(caja)
     global EJE
     EJE = (EJE_ORIGINAL[0] - caja[0], EJE_ORIGINAL[1] - caja[1])
     # Lienzo: cúpula a la izquierda y el medallón pegado a su lado derecho, a media altura
-    lienzo_w = cupula.width + medallon.width - 12
+    lienzo_w = cupula.width + medallon.width - 9
     lienzo = Image.new('RGBA', (lienzo_w, cupula.height))
     lienzo.alpha_composite(cupula, (0, 0))
-    mx, my = cupula.width - 12, cupula.height - medallon.height - 12
+    mx, my = cupula.width - 9, cupula.height - medallon.height - 6
     for nombre, angulo in ANGULOS.items():
         im = lienzo.copy()
         aguja(im, angulo)

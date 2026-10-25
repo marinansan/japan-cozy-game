@@ -164,7 +164,7 @@ html, body {
   .dialogo { font-size: 16px; padding: 14px 16px 18px; }
 }
 
-/* Esquina de arriba a la derecha: reloj y, debajo, el botón de pantalla completa */
+/* Esquina de arriba a la derecha: reloj y, debajo, los yenes */
 .esquina {
   position: absolute;
   top: calc(10px + env(safe-area-inset-top, 0px));
@@ -177,11 +177,11 @@ html, body {
 }
 .esquina > * { pointer-events: auto; }
 
-/* Reloj de cúpula (imágenes de 115x56 px, ampliadas sin emborronar) */
+/* Reloj de cúpula (imágenes de 85x39 px, sin emborronar) */
 .reloj {
   position: relative;
-  width: calc(115 * var(--px));
-  height: calc(56 * var(--px));
+  width: calc(85 * var(--px));
+  height: calc(39 * var(--px));
   filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.25));
 }
 .reloj-imagen {
@@ -196,10 +196,10 @@ html, body {
 .reloj-imagen.visible { opacity: 1; }
 .reloj-numero {
   position: absolute;
-  left: 90.87%;
-  top: 60.71%;
+  left: 87.65%;
+  top: 58.97%;
   transform: translate(-50%, -50%);
-  font: calc(8 * var(--px)) / 1 'Silkscreen', monospace;
+  font: calc(16 * var(--px)) / 1 'Silkscreen', monospace;
   color: #5b3a20;
   -webkit-font-smoothing: none;
   font-variant-numeric: tabular-nums;
@@ -207,25 +207,25 @@ html, body {
 /* Yenes: placa de madera (izquierda, centro que se estira, derecha) con la moneda y la cantidad */
 .yenes {
   display: flex;
-  height: calc(28 * var(--px));
+  height: calc(20 * var(--px));
   filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.25));
   pointer-events: none !important;
 }
 .yenes > span { height: 100%; image-rendering: pixelated; background-size: auto 100%; }
 /* (las imágenes de la placa se ponen desde UI.js con rutas relativas, que funcionan también en GitHub Pages) */
 .placa-izq,
-.placa-der { width: calc(12 * var(--px)); background-repeat: no-repeat; }
+.placa-der { width: calc(8 * var(--px)); background-repeat: no-repeat; }
 .placa-centro {
   display: flex;
   align-items: center;
-  gap: calc(3 * var(--px));
+  gap: calc(2 * var(--px));
   background-repeat: repeat-x;
-  padding-right: calc(2 * var(--px));
+  padding-right: calc(1 * var(--px));
 }
 .yenes-moneda {
-  width: calc(32 * var(--px));
-  height: calc(32 * var(--px));
-  margin-left: calc(-6 * var(--px));
+  width: calc(22 * var(--px));
+  height: calc(22 * var(--px));
+  margin-left: calc(-4 * var(--px));
   image-rendering: pixelated;
 }
 .yenes-cantidad {
@@ -239,13 +239,13 @@ html, body {
     0 var(--px) 0 #1e120c, 0 calc(-1 * var(--px)) 0 #1e120c;
 }
 
-/* Libro de Recuerdos, arriba a la izquierda (círculo claro con borde oscuro, 62x62 px) */
+/* Libro de Recuerdos, arriba a la izquierda (círculo claro con borde oscuro, 44x44 px) */
 .libro {
   position: absolute;
   top: calc(10px + env(safe-area-inset-top, 0px));
   left: calc(12px + env(safe-area-inset-left, 0px));
-  width: calc(62 * var(--px));
-  height: calc(62 * var(--px));
+  width: calc(44 * var(--px));
+  height: calc(44 * var(--px));
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -262,15 +262,18 @@ html, body {
   .reloj-imagen { transition: none; }
 }
 
-/* Botón de pantalla completa */
+/* Botón de pantalla completa, abajo a la izquierda */
 .pantalla-completa {
-  width: 32px;
-  height: 32px;
+  position: absolute;
+  left: calc(12px + env(safe-area-inset-left, 0px));
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: 2px solid var(--papel-borde);
   background: rgba(247, 239, 223, 0.92);
   color: var(--tinta);
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1;
   cursor: pointer;
 }

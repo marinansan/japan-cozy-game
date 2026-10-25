@@ -5,9 +5,9 @@ Uso: python3 tools/make_book_icon.py  (crea public/assets/ui/libro-recuerdos.png
 """
 from PIL import Image
 
-ORIGEN = 'art/source/ui/libro-piel.png'
+ORIGEN = 'art/source/ui/libro-piel-peque.png'  # libro reducido con PixelLab
 DESTINO = 'public/assets/ui/libro-recuerdos.png'
-LADO = 62  # diámetro del círculo (el libro mide 46x41 y debe caber con margen)
+LADO = 44  # diámetro del círculo; el libro (30x24) deja bastante zona clara alrededor
 PAPEL = (247, 239, 223, 255)
 SOMBRA_PAPEL = (226, 212, 184, 255)
 BORDE = (59, 36, 24, 255)
@@ -26,9 +26,9 @@ def main():
             if d <= c - 0.0:
                 if d > c - 1.2:
                     px[x, y] = CONTORNO
-                elif d > c - 3.2:
+                elif d > c - 2.6:
                     px[x, y] = BORDE
-                elif y > c and d > c - 6:
+                elif y > c and d > c - 4.5:
                     px[x, y] = SOMBRA_PAPEL  # un poco de sombra abajo, dentro del borde
                 else:
                     px[x, y] = PAPEL

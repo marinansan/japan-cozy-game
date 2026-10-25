@@ -26,7 +26,7 @@ export function iniciarUI({ pantallaCompleta } = {}) {
 
   // Arriba a la izquierda: el libro de Recuerdos (misiones, recuerdos y personajes)
   libro = crearLibro();
-  // Arriba a la derecha: el reloj, los yenes y el botón de pantalla completa
+  // Arriba a la derecha: el reloj y los yenes. El botón de pantalla completa va abajo a la izquierda
   esquina = crear('div', 'esquina');
   reloj = crearReloj();
   yenes = crearYenes();
@@ -79,7 +79,7 @@ export function iniciarUI({ pantallaCompleta } = {}) {
 function crearPantallaCompleta(alternar) {
   const disponible = document.fullscreenEnabled || document.webkitFullscreenEnabled;
   if (!alternar || !disponible) return;
-  const boton = crear('button', 'pantalla-completa', esquina);
+  const boton = crear('button', 'pantalla-completa');
   boton.type = 'button';
   boton.title = 'Pantalla completa';
   boton.setAttribute('aria-label', 'Pantalla completa');
