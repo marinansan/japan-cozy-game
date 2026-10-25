@@ -5,7 +5,7 @@ import { NOMBRE_FASE } from '../config.js';
 
 const VELOCIDAD_TEXTO = 28; // milisegundos por letra
 
-let raiz, hud, pista, boton, velo, caja, quien, texto, flecha, opciones, aviso, esquina, reloj;
+let raiz, pista, boton, velo, caja, quien, texto, flecha, opciones, aviso, esquina, reloj, yenes;
 let accionActual = null;
 let textoAccion = null;
 let alAvanzar = null; // qué hacer al pulsar o tocar mientras hay un diálogo
@@ -24,10 +24,10 @@ export function iniciarUI({ pantallaCompleta } = {}) {
   raiz = document.getElementById('ui');
   if (esTactil()) raiz.classList.add('tactil');
 
-  hud = crear('div', 'hud');
-  // Arriba a la derecha: el reloj y, debajo, el botón de pantalla completa
+  // Arriba a la derecha: el reloj, los yenes y el botón de pantalla completa
   esquina = crear('div', 'esquina');
   reloj = crearReloj();
+  yenes = crearYenes();
   crearPantallaCompleta(pantallaCompleta);
   // En el móvil en vertical, un aviso para girarlo
   crear('div', 'girar').innerHTML = '<div class="girar-icono">📱</div><p>Gira el móvil para jugar</p>';
@@ -117,11 +117,26 @@ function pintarReloj() {
   reloj.title = `${NOMBRE_FASE[juego.fase]} · Fase de la niebla ${faseNiebla()}`;
 }
 
+// Yenes: moneda dorada con el ¥ y la cantidad, sobre una placa de madera que se estira
+function crearYenes() {
+  const el = crear('div', 'yenes', esquina);
+  const fondo = (pieza, nombre) => (pieza.style.backgroundImage = `url('assets/ui/placa-${nombre}.png')`);
+  fondo(crear('span', 'placa-izq', el), 'izq');
+  const centro = crear('span', 'placa-centro', el);
+  fondo(centro, 'centro');
+  const moneda = crear('img', 'yenes-moneda', centro);
+  moneda.src = 'assets/ui/moneda-yen.png';
+  moneda.alt = '';
+  crear('span', 'yenes-cantidad', centro);
+  fondo(crear('span', 'placa-der', el), 'der');
+  return el;
+}
+
 function pintarHUD() {
-  hud.innerHTML =
-    `<span>Día ${juego.dia}</span><span class="sep">·</span>` +
-    `<span>🌙 ${juego.recuerdos}</span><span>💴 ${juego.yenes}</span>`;
   pintarReloj();
+  yenes.querySelector('.yenes-cantidad').textContent = juego.yenes;
+  yenes.setAttribute('aria-label', `${juego.yenes} yenes`);
+  yenes.title = `${juego.yenes} yenes`;
 }
 
 // La escena dice qué se puede hacer ahora mismo (o null si nada)

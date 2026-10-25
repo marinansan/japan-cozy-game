@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ANCHO, ALTO } from './config.js';
+import '@fontsource/silkscreen/400.css'; // letra pixelada de los números (incluida en el juego)
 import './ui/ui.css';
 import { iniciarUI } from './ui/UI.js';
 import { BootScene } from './scenes/BootScene.js';

@@ -305,7 +305,7 @@ export class LibraryScene extends BaseScene {
     await hablar(datos.gracias);
     juego.yenes += datos.precio;
     avisarCambio();
-    avisar(`+${datos.precio} 💴`);
+    avisar(`+${datos.precio} ¥`);
     // Se toma el té en silencio y se va
     await f.esperar(datos.tomandoTeSegundos * 1000);
     this.despedirFarolero();

@@ -27,24 +27,6 @@ html, body {
 #ui { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
 #ui > * { pointer-events: auto; }
 
-/* Marcador: día, momento del día y recursos */
-.hud {
-  position: absolute;
-  top: calc(12px + env(safe-area-inset-top, 0px));
-  left: calc(12px + env(safe-area-inset-left, 0px));
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  padding: 6px 14px;
-  background: rgba(247, 239, 223, 0.92);
-  border: 2px solid var(--papel-borde);
-  border-radius: 999px;
-  color: var(--tinta);
-  font-size: 15px;
-  pointer-events: none !important;
-}
-.hud .sep { color: var(--papel-borde); }
-
 /* Pista de acción en PC: "[E] Entrar" */
 .pista {
   position: absolute;
@@ -170,11 +152,11 @@ html, body {
 
 @media (max-height: 420px) {
   .dialogo { font-size: 16px; padding: 14px 16px 18px; }
-  .hud { font-size: 13px; }
 }
 
 /* Esquina de arriba a la derecha: reloj y, debajo, el botón de pantalla completa */
 .esquina {
+  --px: 1.5px; /* tamaño de un píxel del arte de la interfaz */
   position: absolute;
   top: calc(10px + env(safe-area-inset-top, 0px));
   right: calc(12px + env(safe-area-inset-right, 0px));
@@ -188,7 +170,6 @@ html, body {
 
 /* Reloj de cúpula (imágenes de 115x56 px, ampliadas sin emborronar) */
 .reloj {
-  --px: 2px;
   position: relative;
   width: calc(115 * var(--px));
   height: calc(56 * var(--px));
@@ -209,12 +190,48 @@ html, body {
   left: 90.87%;
   top: 60.71%;
   transform: translate(-50%, -50%);
-  font: bold calc(11 * var(--px)) / 1 'Georgia', serif;
+  font: calc(8 * var(--px)) / 1 'Silkscreen', monospace;
   color: #5b3a20;
+  -webkit-font-smoothing: none;
   font-variant-numeric: tabular-nums;
 }
+/* Yenes: placa de madera (izquierda, centro que se estira, derecha) con la moneda y la cantidad */
+.yenes {
+  display: flex;
+  height: calc(28 * var(--px));
+  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.25));
+  pointer-events: none !important;
+}
+.yenes > span { height: 100%; image-rendering: pixelated; background-size: auto 100%; }
+/* (las imágenes de la placa se ponen desde UI.js con rutas relativas, que funcionan también en GitHub Pages) */
+.placa-izq,
+.placa-der { width: calc(12 * var(--px)); background-repeat: no-repeat; }
+.placa-centro {
+  display: flex;
+  align-items: center;
+  gap: calc(3 * var(--px));
+  background-repeat: repeat-x;
+  padding-right: calc(2 * var(--px));
+}
+.yenes-moneda {
+  width: calc(32 * var(--px));
+  height: calc(32 * var(--px));
+  margin-left: calc(-6 * var(--px));
+  image-rendering: pixelated;
+}
+.yenes-cantidad {
+  font: calc(16 * var(--px)) / 1 'Silkscreen', monospace;
+  color: #f7efdf;
+  -webkit-font-smoothing: none;
+  font-variant-numeric: tabular-nums;
+  /* contorno oscuro de un píxel alrededor de las cifras */
+  text-shadow:
+    var(--px) 0 0 #1e120c, calc(-1 * var(--px)) 0 0 #1e120c,
+    0 var(--px) 0 #1e120c, 0 calc(-1 * var(--px)) 0 #1e120c;
+}
+
 @media (max-height: 500px) {
-  .reloj { --px: 1.5px; }
+  .esquina { --px: 1px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .reloj-imagen { transition: none; }
