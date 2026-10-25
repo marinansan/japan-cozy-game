@@ -55,7 +55,10 @@ Las decisiones de abajo son **más recientes** que ese prompt y mandan sobre él
 - **Reloj (arriba a la derecha):** cúpula de madera en semicírculo con el cielo de mañana, tarde y noche y una aguja
   (sin hora); el medallón muestra la **fase de la niebla** (`faseNiebla()` = recuerdos + 1), el "nivel" del juego.
   Imágenes `public/assets/ui/reloj-{manana,tarde,noche}.png`, hechas con `tools/make_clock.py` desde la cúpula de PixelLab.
-  El marcador de la izquierda muestra el día, los recuerdos 🌙 y los yenes 💴.
+  Debajo del reloj, los **yenes**: moneda dorada con el ¥ (`tools/make_yen_coin.py`) y la cantidad en la letra
+  pixelada **Silkscreen** sobre una placa de madera que se estira (`tools/make_plaque_parts.py`).
+  Ya no hay marcador a la izquierda: ahí irá el **libro de Recuerdos** (misiones, recuerdos y personajes).
+  Todo el texto de la interfaz que sea número va en Silkscreen ("todo en formato pixel").
 
 ## Cómo probar
 
