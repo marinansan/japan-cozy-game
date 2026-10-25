@@ -30,8 +30,8 @@ html, body {
 /* Marcador: día, momento del día y recursos */
 .hud {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  left: calc(12px + env(safe-area-inset-left, 0px));
   display: flex;
   gap: 10px;
   align-items: center;
@@ -173,3 +173,42 @@ html, body {
   .dialogo { font-size: 16px; padding: 14px 16px 18px; }
   .hud { font-size: 13px; }
 }
+
+/* Botón de pantalla completa, arriba a la derecha */
+.pantalla-completa {
+  position: absolute;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  right: calc(12px + env(safe-area-inset-right, 0px));
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--papel-borde);
+  background: rgba(247, 239, 223, 0.92);
+  color: var(--tinta);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.pantalla-completa:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+
+/* Aviso para girar el móvil (solo táctil y en vertical) */
+.girar {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #1e1814;
+  color: var(--papel);
+  font-size: 20px;
+  text-align: center;
+  z-index: 50;
+}
+.girar-icono { font-size: 56px; animation: girar 2.4s ease-in-out infinite; }
+@keyframes girar { 0%, 30% { transform: rotate(0); } 60%, 100% { transform: rotate(-90deg); } }
+@media (orientation: portrait) and (pointer: coarse) {
+  .girar { display: flex; }
+}
+@media (prefers-reduced-motion: reduce) { .girar-icono { animation: none; } }

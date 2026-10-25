@@ -9,7 +9,10 @@ Las decisiones de abajo son **más recientes** que ese prompt y mandan sobre él
 
 ## Decisiones tomadas en la versión nueva
 
-- **Tecnología:** Phaser 3 + Vite. Vista lógica de 960x540 (`src/config.js`), interfaz en HTML (`src/ui/`).
+- **Tecnología:** Phaser 3 + Vite. Vista lógica de 640x360 que se amplía a toda la pantalla (`Scale.EXPAND`,
+  `src/config.js`); en la librería la cámara se acerca para que la sala llene la pantalla y sigue a la protagonista.
+  Botón de pantalla completa (PC/Android), aviso para girar el móvil en vertical y `manifest.webmanifest`
+  para instalarlo como app ("Añadir a pantalla de inicio", también en iPhone). Interfaz en HTML (`src/ui/`).
   Se publica solo en GitHub Pages al subir a `main` (`.github/workflows/pages.yml`).
 - **Arte:** se genera con **PixelLab** (API v2, `https://api.pixellab.ai/v2`). La cuenta es gratuita:
   una generación a la vez. Las imágenes de PixelLab se descargan por la API (`/characters/{id}/zip`),

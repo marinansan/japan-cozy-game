@@ -143,8 +143,15 @@ export class Player {
     g.clear();
     if (!this.joy.activo) return;
     const { base, vec } = this.joy;
-    g.fillStyle(0xf7efdf, 0.25).fillCircle(base.x, base.y, RADIO_JOYSTICK);
-    g.lineStyle(2, 0xf7efdf, 0.5).strokeCircle(base.x, base.y, RADIO_JOYSTICK);
-    g.fillStyle(0xf7efdf, 0.7).fillCircle(base.x + vec.x, base.y + vec.y, 16);
+    // Se dibuja en coordenadas de pantalla aunque la cámara esté acercada (zoom)
+    const cam = this.scene.cameras.main;
+    const z = cam.zoom;
+    const cx = cam.width / 2;
+    const cy = cam.height / 2;
+    const x = cx + (base.x - cx) / z;
+    const y = cy + (base.y - cy) / z;
+    g.fillStyle(0xf7efdf, 0.25).fillCircle(x, y, RADIO_JOYSTICK / z);
+    g.lineStyle(2 / z, 0xf7efdf, 0.5).strokeCircle(x, y, RADIO_JOYSTICK / z);
+    g.fillStyle(0xf7efdf, 0.7).fillCircle(x + vec.x / z, y + vec.y / z, 16 / z);
   }
 }

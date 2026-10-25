@@ -2,7 +2,6 @@
 // La distribución (muros, muebles, sitios) está en src/data/libraryLayout.js.
 import Phaser from 'phaser';
 import { BaseScene } from './BaseScene.js';
-import { ANCHO, ALTO } from '../config.js';
 import { juego, cambiarFase, nuevoDia, avisar as avisarCambio } from '../systems/GameState.js';
 import { hablar, preguntar, avisar } from '../ui/UI.js';
 import { Spirit } from '../objects/Spirit.js';
@@ -12,9 +11,10 @@ import { TEXTOS } from '../data/textos.js';
 import * as L from '../data/libraryLayout.js';
 
 const PARED_DELANTE = 16; // franja de pared de abajo
-// La imagen va centrada en la pantalla
-const OX = Math.round((ANCHO - L.IMAGEN.ancho) / 2);
-const OY = Math.round((ALTO - L.IMAGEN.alto - PARED_DELANTE) / 2);
+// La sala empieza en la esquina del mundo; la cámara sigue a la protagonista
+// y, si la pantalla es más grande que la sala, la deja centrada
+const OX = 0;
+const OY = 0;
 
 // De medidas de la imagen a posiciones en la pantalla
 const p = ({ x, y }) => ({ x: OX + x, y: OY + y });
@@ -25,7 +25,7 @@ export class LibraryScene extends BaseScene {
   }
 
   create(datos = {}) {
-    this.crearBase(ANCHO, ALTO, 'interior');
+    this.crearBase(L.IMAGEN.ancho, L.IMAGEN.alto + PARED_DELANTE, 'interior');
     this.cameras.main.setBackgroundColor('#1e1814');
     this.physics.world.setBounds(OX, OY, L.IMAGEN.ancho, L.IMAGEN.alto + PARED_DELANTE);
 
@@ -39,9 +39,20 @@ export class LibraryScene extends BaseScene {
     // Al despertar se aparece junto a la puerta de casa; si no, en la entrada
     const inicio = datos.entrada === 'despertar' ? p({ x: L.CASA.x - 10, y: L.CASA.y }) : p(L.ENTRADA);
     this.crearJugador(inicio.x, inicio.y + 6);
+    this.cameras.main.startFollow(this.jugador.sprite, true, 0.12, 0.12);
+    // La sala llena toda la pantalla: la cámara se acerca lo justo para cubrir el ancho y el alto
+    this.ajustarCamara();
+    this.scale.on('resize', this.ajustarCamara, this);
+    this.events.once('shutdown', () => this.scale.off('resize', this.ajustarCamara, this));
     if (datos.entrada === 'inicio') this.presentacion();
     if (juego.fase === 'noche') this.empezarNoche();
     if (juego.fase === 'mañana') this.programarFarolero();
+  }
+
+  ajustarCamara() {
+    const ancho = L.IMAGEN.ancho;
+    const alto = L.IMAGEN.alto + PARED_DELANTE;
+    this.cameras.main.setZoom(Math.max(1, this.scale.width / ancho, this.scale.height / alto));
   }
 
   // ---------- Dibujo ----------

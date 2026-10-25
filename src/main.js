@@ -6,7 +6,6 @@ import { BootScene } from './scenes/BootScene.js';
 import { LibraryScene } from './scenes/LibraryScene.js';
 import { TownScene } from './scenes/TownScene.js';
 
-iniciarUI();
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,
@@ -14,11 +13,15 @@ const game = new Phaser.Game({
   width: ANCHO,
   height: ALTO,
   pixelArt: true, // mantiene los píxeles nítidos, sin emborronar
+  roundPixels: true,
   backgroundColor: '#1e1814',
   physics: { default: 'arcade', arcade: { debug: false } },
-  scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
+  // EXPAND: ocupa toda la pantalla; si es más alargada que 16:9, se ve un poco más de mundo
+  scale: { mode: Phaser.Scale.EXPAND, autoCenter: Phaser.Scale.CENTER_BOTH },
   scene: [BootScene, LibraryScene, TownScene],
 });
+
+iniciarUI({ pantallaCompleta: () => game.scale.toggleFullscreen() });
 
 // Para poder hacer pruebas desde la consola mientras desarrollamos
 if (import.meta.env.DEV) window.__juego = game;

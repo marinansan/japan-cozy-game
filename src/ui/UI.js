@@ -20,11 +20,14 @@ function crear(tag, clase, padre = raiz) {
   return el;
 }
 
-export function iniciarUI() {
+export function iniciarUI({ pantallaCompleta } = {}) {
   raiz = document.getElementById('ui');
   if (esTactil()) raiz.classList.add('tactil');
 
   hud = crear('div', 'hud');
+  crearPantallaCompleta(pantallaCompleta);
+  // En el móvil en vertical, un aviso para girarlo
+  crear('div', 'girar').innerHTML = '<div class="girar-icono">📱</div><p>Gira el móvil para jugar</p>';
   pista = crear('div', 'pista');
   boton = crear('button', 'boton-accion');
   velo = crear('div', 'velo');
@@ -64,6 +67,27 @@ export function iniciarUI() {
 
   escuchar(pintarHUD);
   pintarHUD();
+}
+
+// Botón de pantalla completa (PC y Android). En iPhone no existe: allí se usa
+// "Añadir a pantalla de inicio" y el juego se abre como una app a pantalla completa.
+function crearPantallaCompleta(alternar) {
+  const disponible = document.fullscreenEnabled || document.webkitFullscreenEnabled;
+  if (!alternar || !disponible) return;
+  const boton = crear('button', 'pantalla-completa');
+  boton.type = 'button';
+  boton.title = 'Pantalla completa';
+  boton.setAttribute('aria-label', 'Pantalla completa');
+  boton.textContent = '⛶';
+  boton.addEventListener('click', async () => {
+    try {
+      alternar();
+      // En el móvil, intentar dejarlo en horizontal (si el navegador lo permite)
+      await screen.orientation?.lock?.('landscape');
+    } catch {
+      // Si no se puede, se sigue jugando igual
+    }
+  });
 }
 
 function pintarHUD() {

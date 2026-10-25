@@ -1,7 +1,7 @@
 // Lo que comparten la librería y el pueblo: el protagonista, los muros,
 // las cosas con las que se puede interactuar, la luz del día y los cambios de escena.
 import Phaser from 'phaser';
-import { ANCHO, ALTO, LUZ } from '../config.js';
+import { LUZ } from '../config.js';
 import { juego } from '../systems/GameState.js';
 import { ponerAccion } from '../ui/UI.js';
 import { Player } from '../objects/Player.js';
@@ -16,8 +16,9 @@ export class BaseScene extends Phaser.Scene {
     this.teclasAccion = this.input.keyboard.addKeys('E,SPACE,ENTER');
 
     // Capa de luz que tiñe toda la escena según el momento del día
+    // (muy grande para cubrir cualquier pantalla, también las alargadas)
     this.luz = this.add
-      .rectangle(0, 0, ANCHO, ALTO, 0xffffff)
+      .rectangle(0, 0, 4096, 4096, 0xffffff)
       .setOrigin(0)
       .setScrollFactor(0)
       .setDepth(9000)

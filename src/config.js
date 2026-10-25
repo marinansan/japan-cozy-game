@@ -1,7 +1,7 @@
-// Tamaño lógico del juego. Es el doble de nítido en pantallas 1920x1080
-// (escala exacta x2), y en el resto se ajusta al tamaño de la ventana.
-export const ANCHO = 960;
-export const ALTO = 540;
+// Tamaño lógico mínimo del juego (16:9). Se amplía a la pantalla: x2 en 1280x720, x3 en 1920x1080.
+// En pantallas más alargadas (móviles) la vista se ensancha para ocuparlo todo, sin bandas negras.
+export const ANCHO = 640;
+export const ALTO = 360;
 
 // Velocidad al caminar (píxeles por segundo). Despacio: es un juego sin prisa.
 export const VELOCIDAD = 85;
