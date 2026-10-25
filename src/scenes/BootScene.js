@@ -1,6 +1,8 @@
 // Carga las imágenes y crea las texturas provisionales que aún no tienen arte.
 import Phaser from 'phaser';
 import { FRENTES } from '../data/libraryLayout.js';
+import { VECINOS } from '../data/vecinos.js';
+import { crearAnimacionesNpc } from '../objects/Npc.js';
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -19,6 +21,13 @@ export class BootScene extends Phaser.Scene {
     this.load.image('prota-n', 'assets/prota/north.png');
     this.load.image('prota-e', 'assets/prota/east.png');
     this.load.image('prota-o', 'assets/prota/west.png');
+    // Vecinos: una imagen quieta por dirección y 8 fotogramas de caminar
+    for (const clave of Object.keys(VECINOS)) {
+      for (const [dir, letra] of [['south', 's'], ['north', 'n'], ['east', 'e'], ['west', 'o']]) {
+        this.load.image(`${clave}-${letra}`, `assets/${clave}/${dir}.png`);
+        for (let i = 0; i < 8; i++) this.load.image(`${clave}-caminar-${dir}-${i}`, `assets/${clave}/caminar/${dir}_${i}.png`);
+      }
+    }
     // Animación de caminar: 6 fotogramas por dirección
     for (const dir of ['south', 'east', 'north', 'west']) {
       for (let i = 0; i < 6; i++) this.load.image(`caminar-${dir}-${i}`, `assets/prota/caminar/${dir}_${i}.png`);
@@ -30,6 +39,8 @@ export class BootScene extends Phaser.Scene {
     this.crearDegradado('brillo', 128, 'rgba(255,255,255,1)');
     this.crearSombra();
     this.crearAnimaciones();
+    // El farolero da pasos lentos
+    for (const clave of Object.keys(VECINOS)) crearAnimacionesNpc(this, clave, 8, 6);
     this.scene.start('Library', { entrada: 'inicio' });
   }
 

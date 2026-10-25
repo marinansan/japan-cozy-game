@@ -3,9 +3,11 @@
 import Phaser from 'phaser';
 import { BaseScene } from './BaseScene.js';
 import { ANCHO, ALTO } from '../config.js';
-import { juego, cambiarFase, nuevoDia } from '../systems/GameState.js';
+import { juego, cambiarFase, nuevoDia, avisar as avisarCambio } from '../systems/GameState.js';
 import { hablar, preguntar, avisar } from '../ui/UI.js';
 import { Spirit } from '../objects/Spirit.js';
+import { Npc } from '../objects/Npc.js';
+import { VECINOS, segunDia } from '../data/vecinos.js';
 import { TEXTOS } from '../data/textos.js';
 import * as L from '../data/libraryLayout.js';
 
@@ -39,6 +41,7 @@ export class LibraryScene extends BaseScene {
     this.crearJugador(inicio.x, inicio.y + 6);
     if (datos.entrada === 'inicio') this.presentacion();
     if (juego.fase === 'noche') this.empezarNoche();
+    if (juego.fase === 'mañana') this.programarFarolero();
   }
 
   // ---------- Dibujo ----------
@@ -158,7 +161,8 @@ export class LibraryScene extends BaseScene {
         if (this.jugador.pies().x < OX + 60) await this.jugador.irA(OX + 40, sitio.y);
         await this.jugador.irA(sitio.x, sitio.y);
         this.jugador.mirar('e');
-        await hablar(juego.fase === 'noche' ? TEXTOS.barraNoche : TEXTOS.barraVacia);
+        if (this.farolero?.esperando) await this.atenderFarolero();
+        else await hablar(juego.fase === 'noche' ? TEXTOS.barraNoche : TEXTOS.barraVacia);
       },
     });
   }
@@ -173,6 +177,7 @@ export class LibraryScene extends BaseScene {
       const r = await preguntar(TEXTOS.preguntaCerrarManana);
       if (r !== 0) return;
       cambiarFase('tarde');
+      this.despedirFarolero();
       this.pintarCartel();
       this.ponerLuz();
       avisar('Ya es por la tarde');
@@ -240,8 +245,77 @@ export class LibraryScene extends BaseScene {
     });
   }
 
+  // ---------- El farolero (por las mañanas) ----------
+
+  programarFarolero() {
+    if (juego.vistos.faroleroDia === juego.dia) return; // solo viene una vez por mañana
+    const datos = VECINOS.farolero;
+    // Espera a que termine cualquier diálogo (como la presentación del primer día)
+    const intentar = () => {
+      if (juego.ocupado || juego.fase !== 'mañana') return this.time.delayedCall(1000, intentar);
+      this.llegaFarolero();
+    };
+    this.time.delayedCall(datos.llegaTrasSegundos * 1000, intentar);
+  }
+
+  async llegaFarolero() {
+    const datos = VECINOS.farolero;
+    juego.vistos.faroleroDia = juego.dia;
+    const entrada = p(L.ENTRADA);
+    const f = new Npc(this, 'farolero', entrada.x, entrada.y, datos);
+    this.farolero = f;
+    this.charlaFarolero = {
+      get x() {
+        return f.x;
+      },
+      get y() {
+        return f.y;
+      },
+      radio: 46,
+      texto: 'Hablar',
+      activa: () => !this.detrasDeLaBarra() && !f.yendose,
+      accion: () => hablar(segunDia(datos.charla, juego.dia)),
+    };
+    this.interaccion(this.charlaFarolero);
+    await f.caminarPor(L.CAMINO_CLIENTE.map(p));
+    if (f.yendose) return;
+    f.mirar('o'); // mira hacia la barra
+    f.esperando = true;
+    f.mostrarMarca(true);
+  }
+
+  async atenderFarolero() {
+    const f = this.farolero;
+    const datos = VECINOS.farolero;
+    f.esperando = false;
+    f.mostrarMarca(false);
+    await hablar(segunDia(datos.pedidos, juego.dia));
+    await hablar(datos.servir);
+    await hablar(datos.gracias);
+    juego.yenes += datos.precio;
+    avisarCambio();
+    avisar(`+${datos.precio} 💴`);
+    // Se toma el té en silencio y se va
+    await f.esperar(datos.tomandoTeSegundos * 1000);
+    this.despedirFarolero();
+  }
+
+  async despedirFarolero() {
+    const f = this.farolero;
+    if (!f || f.yendose) return;
+    f.yendose = true;
+    f.esperando = false;
+    f.mostrarMarca(false);
+    this.tweens.killTweensOf(f.sprite); // por si aún estaba entrando
+    await f.caminarPor([...L.CAMINO_CLIENTE].reverse().map(p).concat(p(L.ENTRADA)));
+    this.tweens.add({ targets: [f.sprite, f.sombra], alpha: 0, duration: 600, onComplete: () => f.destruir() });
+    this.interacciones = this.interacciones.filter((it) => it !== this.charlaFarolero);
+    this.farolero = null;
+  }
+
   update() {
     super.update();
     this.espiritu?.update();
+    this.farolero?.update();
   }
 }

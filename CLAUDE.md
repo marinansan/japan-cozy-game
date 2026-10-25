@@ -43,6 +43,10 @@ Las decisiones de abajo son **más recientes** que ese prompt y mandan sobre él
   **farolillo de papel apagado** al cinturón. Imágenes en `public/assets/farolero/` (64x64, 4 direcciones y
   animación de caminar lenta con el bastón, 8 fotogramas). El farolillo se apaga con `tools/dim_lantern.py`.
   Se hizo con `generate-8-rotations-v3` y `animate-with-text-v3` (crear "personaje" pide tener ~20 generaciones libres).
+  - **En el juego:** cada mañana entra por la noren a los pocos segundos, camina muy despacio hasta la barra
+    (lado de los taburetes, `CAMINO_CLIENTE`), espera con su "!" y se le atiende desde el sitio del barista:
+    pide un té solo, paga 300 💴, se queda un rato y se va. Una vez por mañana. Textos en `src/data/vecinos.js`.
+  - Los vecinos usan `src/objects/Npc.js` (caminar por puntos, mirar, "!"); sirve para los siguientes clientes.
 - **Espíritus:** translúcidos con halo lavanda (la señora Okiku, `public/assets/okiku.png`).
 
 ## Cómo probar

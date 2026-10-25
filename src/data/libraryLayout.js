@@ -53,6 +53,13 @@ export const ZONA_BARISTA = [
 export const BARISTA = { x: 120, y: 268 }; // sitio donde se atiende, mirando a los taburetes
 export const ESTANTERIAS = { x: 240, y: 200 };
 export const TATAMI = { x: 440, y: 282 };
+// Camino de los clientes desde la noren hasta su sitio en la barra (lado de los taburetes),
+// pasando por zonas libres entre las estanterías y la mesa de arriba
+export const CAMINO_CLIENTE = [
+  { x: 333, y: 200 },
+  { x: 226, y: 222 },
+  { x: 220, y: 262 },
+];
 export const SITIO_ESPIRITU = { x: 222, y: 282 }; // donde espera el espíritu, junto a la barra
 export const FAROLILLOS = [
   { x: 82, y: 102 },
