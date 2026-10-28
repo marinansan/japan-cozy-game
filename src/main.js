@@ -18,7 +18,13 @@ const game = new Phaser.Game({
   backgroundColor: '#1e1814',
   physics: { default: 'arcade', arcade: { debug: false } },
   // EXPAND: ocupa toda la pantalla; si es más alargada que 16:9, se ve un poco más de mundo
-  scale: { mode: Phaser.Scale.EXPAND, autoCenter: Phaser.Scale.CENTER_BOTH },
+  scale: {
+    mode: Phaser.Scale.EXPAND,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    // Pantalla completa de toda la página: así se ven también el libro, el reloj, los yenes y los diálogos,
+    // que son HTML por encima del juego (si no, solo se pondría a pantalla completa el lienzo del juego)
+    fullscreenTarget: document.body,
+  },
   scene: [BootScene, LibraryScene, TownScene],
 });
 
